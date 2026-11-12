@@ -13,9 +13,9 @@
 <div id="bar"></div>
 <nav>
   <div class="logo"><span>JS</span>Як це працює</div>
-  <a href="#vars">Змінні</a><a href="#types">Типи даних</a><a href="#dynamic">Динамічна типізація</a>
+  <a href="#intro">Вступ</a><a href="#vars">Змінні</a><a href="#types">Типи даних</a><a href="#dynamic">Динамічна типізація</a><a href="#functions">Функції</a>
   <a href="#arrays">Масиви</a><a href="#objects">Об’єкти</a><a href="#cond">Умови</a><a href="#loops">Цикли</a>
-  <a href="#dom">DOM</a><a href="#events">Події</a>
+  <a href="#dom">DOM</a><a href="#events">Події</a><a href="#todo">To‑Do</a>
 </nav>
 
 <header class="hero">
@@ -31,9 +31,24 @@
 
 <main>
 
+<!-- 00 INTRO -->
+<section id="intro" class="topic reveal">
+  <header><span class="num">00</span><h2>Що таке JavaScript?</h2><span class="speaker speaker-1">Доповідач 1</span>
+    <p>JavaScript — мова програмування, яка додає вебсторінкам поведінку та інтерактивність. Вона працює в браузері, а також на серверах та в інших середовищах.</p></header>
+  <div class="stage"><div class="grid g2 intro-grid">
+    <div><h3>Коротка історія</h3><p class="sub">Мову створив Брендан Айк у 1995 році для браузера Netscape. Спочатку вона називалася LiveScript, а згодом отримала назву JavaScript. Стандарт ECMAScript підтримує спільні правила розвитку мови.</p>
+    <h3>Де застосовується</h3><p class="sub">Інтерактивні сайти, вебзастосунки, сервери, мобільні й настільні програми, автоматизація та навчальні інструменти.</p></div>
+    <div><h3>Три частини вебсторінки</h3><div class="tech-stack">
+      <div class="tech-card"><b>HTML</b><span>Структура та зміст</span><code>&lt;button&gt;Привіт&lt;/button&gt;</code></div>
+      <div class="tech-card"><b>CSS</b><span>Зовнішній вигляд</span><code>button { color: gold; }</code></div>
+      <div class="tech-card"><b>JavaScript</b><span>Поведінка й реакції</span><code>button.onclick = greet;</code></div>
+    </div><p class="hint">HTML описує елементи, CSS оформлює їх, а JavaScript реагує на дії та оновлює сторінку.</p></div>
+  </div></div>
+</section>
+
 <!-- 01 VARIABLES -->
 <section id="vars" class="topic reveal">
-  <header><span class="num">01</span><h2>Змінні</h2>
+  <header><span class="speaker speaker-1">Доповідач 1</span><span class="num">01</span><h2>Змінні</h2>
     <p>Змінна — це підписана коробочка, у якій лежить значення. Створи кілька коробочок, спробуй змінити їхній вміст і подивись, чим <b>let</b>, <b>const</b> і <b>var</b> відрізняються.</p></header>
   <div class="stage">
     <div id="varForm" class="row">
@@ -51,7 +66,7 @@
 
 <!-- 02 TYPES -->
 <section id="types" class="topic reveal">
-  <header><span class="num">02</span><h2>Типи даних</h2>
+  <header><span class="speaker speaker-1">Доповідач 1</span><span class="num">02</span><h2>Типи даних</h2>
     <p>Вісім «сортів» значень: сім примітивів і об’єкти. Клікни будь-який приклад або введи власне значення — JavaScript визначить його тип.</p></header>
   <div class="stage">
     <div class="grid g4" id="typeGrid"></div>
@@ -66,7 +81,7 @@
 
 <!-- 03 DYNAMIC -->
 <section id="dynamic" class="topic reveal">
-  <header><span class="num">03</span><h2>Динамічна типізація</h2>
+  <header><span class="speaker speaker-1">Доповідач 1</span><span class="num">03</span><h2>Динамічна типізація</h2>
     <p>У JavaScript тип має <b>значення</b>, а не змінна. Одна й та сама змінна може бути то числом, то рядком, то масивом. А коли типи змішуються — JS мовчки перетворює їх.</p></header>
   <div class="stage">
     <h3>Одна змінна — багато типів</h3>
@@ -92,7 +107,7 @@
 
 <!-- 04 ARRAYS -->
 <section id="arrays" class="topic reveal">
-  <header><span class="num">04</span><h2>Масиви</h2>
+  <header><span class="speaker speaker-2">Доповідач 2</span><span class="num">04</span><h2>Масиви</h2>
     <p>Впорядкована колекція значень. Кожен елемент має номер — <b>індекс</b>, і лічба починається з нуля. Додавай, видаляй і сортуй.</p></header>
   <div class="stage">
     <div class="arrinfo"><span class="pill" style="--c:var(--cyan)">довжина: <b id="arrLen">0</b></span><span id="arrNote" class="msg" style="margin:0"></span></div>
@@ -113,7 +128,7 @@
 
 <!-- 05 OBJECTS -->
 <section id="objects" class="topic reveal">
-  <header><span class="num">05</span><h2>Об’єкти</h2>
+  <header><span class="speaker speaker-2">Доповідач 2</span><span class="num">05</span><h2>Об’єкти</h2>
     <p>Об’єкт — це набір пар «ключ → значення». Тут ключі мають <b>імена</b>, а не номери. Значенням може бути що завгодно: число, масив, навіть функція (метод).</p></header>
   <div class="stage">
     <div class="grid g2" style="align-items:start">
@@ -135,7 +150,7 @@
 
 <!-- 06 CONDITIONS -->
 <section id="cond" class="topic reveal">
-  <header><span class="num">06</span><h2>Умовні оператори</h2>
+  <header><span class="speaker speaker-2">Доповідач 2</span><span class="num">06</span><h2>Умовні оператори</h2>
     <p>Програма сама обирає шлях. JS перевіряє умови зверху вниз і виконує <b>першу</b>, що виявилась правдивою; решту пропускає.</p></header>
   <div class="stage">
     <h3>if · else if · else</h3>
@@ -158,7 +173,7 @@
 
 <!-- 07 LOOPS -->
 <section id="loops" class="topic reveal">
-  <header><span class="num">07</span><h2>Цикли</h2>
+  <header><span class="speaker speaker-2">Доповідач 2</span><span class="num">07</span><h2>Цикли</h2>
     <p>Цикл повторює дію, доки умова істинна. Натискай «Крок», щоб пройти по ітераціях по одній, або запусти автоплей.</p></header>
   <div class="stage">
     <div class="tabs" id="loopTabs"><div class="tab on" data-m="for">for</div><div class="tab" data-m="while">while</div><div class="tab" data-m="of">for…of</div><div class="tab" data-m="each">forEach</div></div>
@@ -177,7 +192,7 @@
 
 <!-- 08 DOM -->
 <section id="dom" class="topic reveal">
-  <header><span class="num">08</span><h2>Взаємодія з веб-документом (DOM)</h2>
+  <header><span class="speaker speaker-3">Доповідач 3</span><span class="num">08</span><h2>Взаємодія з веб-документом (DOM)</h2>
     <p>Браузер перетворює HTML на дерево об’єктів — <b>DOM</b>. JavaScript може знаходити вузли, створювати нові, міняти текст і стилі та видаляти їх. Справа — справжня мініатюрна сторінка; зліва — її живе дерево.</p></header>
   <div class="stage">
     <div class="domwrap">
@@ -200,7 +215,7 @@
 
 <!-- 09 EVENTS -->
 <section id="events" class="topic reveal">
-  <header><span class="num">09</span><h2>Події та їх обробка</h2>
+  <header><span class="speaker speaker-3">Доповідач 3</span><span class="num">09</span><h2>Події та їх обробка</h2>
     <p>Подія — це сигнал: «користувач клікнув», «натиснув клавішу», «ввів текст». Обробник — функція, яка чекає на сигнал і реагує. Підпишись на події й подивись, що приходить.</p></header>
   <div class="stage">
     <h3>Підписка на події</h3>
