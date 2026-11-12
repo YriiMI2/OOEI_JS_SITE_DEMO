@@ -77,6 +77,8 @@
     <div id="anForm" class="row"><input id="anIn" value="11" style="flex:1;min-width:200px" autocomplete="off"><button type="button" class="btn" id="anBtn">Визначити тип</button></div>
     <div class="anal" id="anal"></div>
   </div>
+  <div class="stage"><h3>Лабораторія операторів</h3><p class="sub">Зміни числа й оператор. Присвоєння показує, як змінна оновлюється.</p><div class="row operator-lab"><input id="opLeft" type="number" value="8" aria-label="Перше число"><select id="opKind"><option value="+">Додавання +</option><option value="-">Віднімання −</option><option value="*">Множення ×</option><option value="/">Ділення ÷</option><option value="%">Остача %</option><option value="===">Строге дорівнює ===</option><option value=">">Більше &gt;</option><option value="&&">Логічне І &&</option><option value="||">Логічне АБО ||</option><option value="+=">Присвоїти з додаванням +=</option><option value="*=">Присвоїти з множенням *=</option></select><input id="opRight" type="number" value="3" aria-label="Друге число"><button class="btn sm" id="opRun" type="button">Обчислити</button></div><div class="result" id="opResult" aria-live="polite"></div><p class="hint">Явне перетворення: <code>Number("8")</code>. Неявне: оператори можуть перетворювати операнди автоматично. Строге <code>===</code> порівнює значення без неочікуваного приведення типів.</p></div>
+
 </section>
 
 <!-- 03 DYNAMIC -->
@@ -303,6 +305,17 @@ item.remove();</code></pre></article>
     <div class="row"><button class="btn sm" id="deleAdd">+ Додати елемент</button><span class="counter">Обробників на сторінці: <b>1</b> · елементів: <b id="deleN">0</b></span></div>
     <div class="msg" id="deleMsg"></div>
   </div>
+</section>
+
+<!-- FINAL PROJECT -->
+<section id="todo" class="topic reveal">
+ <header><span class="num">✦</span><h2>Фінальний проєкт: To‑Do List</h2><span class="speaker speaker-3">Практика · усі доповідачі</span><p>Застосуй JavaScript у маленькому застосунку: додавай завдання, позначай виконані й видаляй непотрібні.</p></header>
+ <div class="stage todo-stage"><form id="todoForm" class="row"><label class="sr-only" for="todoInput">Нове завдання</label><input id="todoInput" placeholder="Наприклад: повторити масиви" maxlength="120" autocomplete="off" required><button type="submit" class="btn">＋ Додати</button></form><div class="todo-stats" aria-live="polite"><span class="pill">Усього: <b id="todoTotal">0</b></span><span class="pill" style="--c:var(--green)">Виконано: <b id="todoDone">0</b></span><span class="pill" style="--c:var(--orange)">Залишилось: <b id="todoLeft">0</b></span></div><ul id="todoList" class="todo-list"></ul><p id="todoEmpty" class="todo-empty">Тут з’являться твої завдання ✨</p></div>
+ <div class="stage"><h3>Який JavaScript тут працює?</h3><div class="reference-grid compact-ref"><article class="reference-card"><b>Змінні й масив об’єктів</b><p>Список зберігається як масив; кожне завдання має текст та стан виконання.</p></article><article class="reference-card"><b>Функції й умови</b><p>Функції додають, перемикають і видаляють завдання. Умова визначає лічильники та вигляд виконаного пункту.</p></article><article class="reference-card"><b>Методи масивів і цикли</b><p><code>filter</code> рахує стани, <code>forEach</code> відображає елементи.</p></article><article class="reference-card"><b>DOM та події</b><p>Форма слухає <code>submit</code>, список делегує кліки. DOM створює кнопки та оновлює лічильники.</p></article></div><pre class="mini-code"><code>const tasks = [{ text: 'Вивчити JavaScript', done: false }];
+function addTask(text) { tasks.push({ text, done: false }); render(); }
+function toggleTask(id) { tasks[id].done = !tasks[id].done; render(); }
+const completed = tasks.filter(task => task.done).length;
+tasks.forEach((task, id) => renderTask(task, id));</code></pre></div>
 </section>
 
 </main>

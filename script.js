@@ -584,6 +584,21 @@ if(innerWidth>700)$('#fo').style.display='block';
   refresh();
 })();
 
+
+/* ===== OPERATOR LAB AND FINAL TODO ===== */
+(function(){
+  const left=$('#opLeft'),right=$('#opRight'),kind=$('#opKind'),output=$('#opResult');let assigned=Number(left.value);
+  function runOperator(){const a=Number(left.value),b=Number(right.value),op=kind.value;let value;switch(op){case '+':value=a+b;break;case '-':value=a-b;break;case '*':value=a*b;break;case '/':value=b===0?'ділення на нуль не визначене':a/b;break;case '%':value=b===0?'ділення на нуль не визначене':a%b;break;case '===':value=a===b;break;case '>':value=a>b;break;case '&&':value=Boolean(a)&&Boolean(b);break;case '||':value=Boolean(a)||Boolean(b);break;case '+=':assigned=a+b;value=`x = ${assigned}`;break;case '*=':assigned=a*b;value=`x = ${assigned}`;break;}output.textContent=`${op}: ${value}`;}
+  $('#opRun').addEventListener('click',runOperator);kind.addEventListener('change',runOperator);left.addEventListener('input',runOperator);right.addEventListener('input',runOperator);runOperator();
+  const tasks=[];let nextId=0;const list=$('#todoList'),form=$('#todoForm'),input=$('#todoInput');
+  function updateStats(){const done=tasks.filter(task=>task.done).length;$('#todoTotal').textContent=tasks.length;$('#todoDone').textContent=done;$('#todoLeft').textContent=tasks.length-done;$('#todoEmpty').hidden=tasks.length>0;}
+  function render(){list.replaceChildren();tasks.forEach(task=>{const item=document.createElement('li');item.className='todo-item'+(task.done?' completed':'');item.dataset.id=task.id;const toggle=document.createElement('button');toggle.type='button';toggle.className='todo-toggle';toggle.dataset.action='toggle';toggle.setAttribute('aria-label',task.done?'Позначити невиконаним':'Позначити виконаним');toggle.textContent=task.done?'✓':'○';const text=document.createElement('span');text.className='todo-text';text.textContent=task.text;const remove=document.createElement('button');remove.type='button';remove.className='todo-remove';remove.dataset.action='remove';remove.textContent='Видалити';item.append(toggle,text,remove);list.append(item);});updateStats();}
+  function addTask(text){const clean=text.trim();if(!clean)return;tasks.push({id:nextId++,text:clean,done:false});render();}
+  function handleSubmit(event){event.preventDefault();addTask(input.value);input.value='';input.focus();}
+  function handleListClick(event){const button=event.target.closest('button[data-action]');if(!button)return;const item=button.closest('[data-id]'),id=Number(item.dataset.id),index=tasks.findIndex(task=>task.id===id);if(index<0)return;if(button.dataset.action==='toggle')tasks[index].done=!tasks[index].done;else if(button.dataset.action==='remove')tasks.splice(index,1);render();}
+  form.addEventListener('submit',handleSubmit);list.addEventListener('click',handleListClick);render();
+})();
+
 /* ===== 09 EVENTS ===== */
 (function(){
   /* playground */
