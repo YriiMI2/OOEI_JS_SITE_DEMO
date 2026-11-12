@@ -105,6 +105,17 @@
   </div>
 </section>
 
+<!-- FUNCTIONS -->
+<section id="functions" class="topic reveal">
+ <header><span class="num">03</span><h2>Функції</h2><span class="speaker speaker-1">Доповідач 1</span><p>Функція — це багаторазовий блок інструкцій. Передай їй аргумент, а вона поверне результат. Declaration, Expression та Arrow — три поширені способи створення функцій.</p></header>
+ <div class="stage"><div class="grid g2">
+  <article class="concept"><h3>Три форми</h3><pre class="mini-code"><code>function double(x) { return x * 2; }
+const triple = function(x) { return x * 3; };
+const square = x => x * x;</code></pre><p class="sub"><b>Параметр</b> — назва в оголошенні, <b>аргумент</b> — передане значення. <code>return</code> повертає результат. Scope визначає, де змінну видно: локальна змінна доступна лише всередині своєї функції.</p></article>
+  <article><h3>Спробуй функцію</h3><label class="counter" for="fnValue">Введи число</label><input id="fnValue" type="number" value="6"><div class="row" style="margin-top:10px"><select id="fnKind"><option value="double">Подвоїти · function declaration</option><option value="triple">Потроїти · function expression</option><option value="square">Піднести до квадрата · arrow</option></select><button class="btn" id="fnRun" type="button">Виконати</button></div><div class="result" id="fnResult" aria-live="polite"></div></article>
+ </div></div>
+</section>
+
 <!-- 04 ARRAYS -->
 <section id="arrays" class="topic reveal">
   <header><span class="speaker speaker-2">Доповідач 2</span><span class="num">04</span><h2>Масиви</h2>
@@ -123,6 +134,14 @@
     </div>
     <div class="row" style="margin-top:16px"><span class="counter">Дістати елемент за індексом:</span><input type="number" id="arrIdx" value="2" style="width:80px"><button class="btn sm" id="arrGet">дістати</button><span id="arrGot" class="counter"></span></div>
     <p class="hint">Чому «сортувати за замовчуванням» ставить 100 перед 25? Бо воно порівнює елементи як <b>рядки</b>! Спробуй обидва варіанти.</p>
+    <div class="method-lab"><h3>Методи масивів</h3><p class="sub"><code>forEach</code> виконує дію для кожного елемента, а <code>map</code> створює новий масив результатів. <code>filter</code> залишає відповідні значення, <code>find</code> повертає перший збіг, <code>includes</code> перевіряє наявність.</p>
+      <div class="row"><select id="arrayMethod"><option value="forEach">forEach — показати кожен</option><option value="map">map — подвоїти числа</option><option value="filter">filter — парні числа</option><option value="find">find — перше число понад 5</option><option value="includes">includes — чи є число 3?</option></select><button class="btn sm" id="arrayMethodRun" type="button">Запустити на [1, 2, 3, 6]</button></div><div class="result" id="arrayMethodResult" aria-live="polite"></div>
+      <pre class="mini-code"><code>const nums = [1, 2, 3, 6];
+nums.forEach(n => console.log(n)); // дія, повертає undefined
+const doubled = nums.map(n => n * 2); // новий масив
+const evens = nums.filter(n => n % 2 === 0);
+const first = nums.find(n => n > 5);
+const hasThree = nums.includes(3);</code></pre></div>
   </div>
 </section>
 

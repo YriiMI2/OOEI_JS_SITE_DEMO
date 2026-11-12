@@ -296,6 +296,20 @@ if(innerWidth>700)$('#fo').style.display='block';
   calc();
 })();
 
+
+/* ===== FUNCTIONS AND ARRAY METHODS ===== */
+(function(){
+  const value=$('#fnValue'),kind=$('#fnKind'),result=$('#fnResult');
+  function double(x){return x*2;}
+  const triple=function(x){return x*3;};
+  const square=x=>x*x;
+  function runFunction(){const n=Number(value.value);const funcs={double,triple,square};result.textContent=`${kind.value}(${n}) = ${funcs[kind.value](n)}`;}
+  $('#fnRun').addEventListener('click',runFunction);value.addEventListener('input',runFunction);kind.addEventListener('change',runFunction);runFunction();
+  const nums=[1,2,3,6],method=$('#arrayMethod'),out=$('#arrayMethodResult');
+  function runArrayMethod(){const actions={forEach:()=>{const visited=[];nums.forEach(n=>visited.push(n));return `forEach відвідав: ${visited.join(', ')} (нового масиву не повертає)`;},map:()=>`map повернув: [${nums.map(n=>n*2).join(', ')}]`,filter:()=>`filter повернув: [${nums.filter(n=>n%2===0).join(', ')}]`,find:()=>`find повернув: ${nums.find(n=>n>5)}`,includes:()=>`includes(3): ${nums.includes(3)}`};out.textContent=actions[method.value]();}
+  $('#arrayMethodRun').addEventListener('click',runArrayMethod);method.addEventListener('change',runArrayMethod);runArrayMethod();
+})();
+
 /* ===== 04 ARRAYS ===== */
 (function(){
   const INIT=()=>[8,15,3,42,100];
