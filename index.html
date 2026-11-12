@@ -206,6 +206,14 @@ const hasThree = nums.includes(3);</code></pre></div>
       <div class="lbox"><small>Стан змінних</small><div id="lVars"></div><small style="margin-top:10px">Перевірка умови</small><div class="cond" id="lCond">—</div></div>
       <div class="lbox"><small>Вивід (консоль)</small><div class="console" id="lLog"></div></div>
     </div>
+    <div class="reference-grid">
+      <article class="reference-card"><h3>Інші конструкції</h3><p><code>do...while</code> спершу виконує тіло, а тоді перевіряє умову — тому має мінімум одну ітерацію.</p><pre class="mini-code"><code>let n = 0;
+do { n++; } while (n &lt; 3);</code></pre></article>
+      <article class="reference-card"><h3>for...in та for...of</h3><p><code>for...of</code> перебирає значення масиву; <code>for...in</code> — ключі/властивості об’єкта. Для масивів зазвичай використовуй for...of.</p><pre class="mini-code"><code>for (const fruit of fruits) { ... }
+for (const key in user) { ... }</code></pre></article>
+      <article class="reference-card"><h3>Керування циклом</h3><p><code>break</code> повністю завершує цикл. <code>continue</code> пропускає решту поточної ітерації. <code>for</code> зручний для лічильника, <code>while</code> — коли кількість повторів залежить від умови.</p></article>
+      <article class="reference-card"><h3>Цикл чи метод масиву?</h3><p>Цикл дає гнучке керування потоком. <code>map</code>, <code>filter</code>, <code>find</code> виражають типову роботу з колекціями коротше; <code>forEach</code> виконує дію для кожного елемента.</p></article>
+    </div>
   </div>
 </section>
 
@@ -227,6 +235,15 @@ const hasThree = nums.includes(3);</code></pre></div>
       <button class="btn sm danger" id="dDel">Видалити</button>
     </div>
     <div class="tools"><input id="domText" value="Привіт від JavaScript!" autocomplete="off"><button class="btn sm" id="dText">Змінити текст</button></div>
+    <div class="reference-grid compact-ref">
+      <article class="reference-card"><h3>Як працює DOM</h3><p>Браузер розбирає HTML і створює дерево вузлів. Елементи — вузли з тегами; текст і атрибути теж представлені у DOM. JavaScript знаходить їх і змінює під час роботи сторінки.</p><pre class="mini-code"><code>document.getElementById('app')
+document.querySelector('.card')
+document.querySelectorAll('li')</code></pre></article>
+      <article class="reference-card"><h3>Зміна та створення</h3><p><code>textContent</code> задає звичайний текст. <code>innerHTML</code> читає або задає розмітку. Стилі: <code>style</code>; класи: <code>classList.add/remove/toggle</code>. Атрибути: <code>getAttribute/setAttribute/removeAttribute</code>.</p><pre class="mini-code"><code>const item = document.createElement('li');
+item.textContent = 'Новий пункт';
+list.append(item); // або appendChild(item)
+item.remove();</code></pre></article>
+    </div>
     <div class="tools"><input id="domSel" value="li" autocomplete="off" placeholder="CSS-селектор"><button class="btn sm" id="dFind">Знайти за селектором</button>
       <span class="chip" data-s="li">li</span><span class="chip" data-s="p">p</span><span class="chip" data-s=".hl">.hl</span><span class="chip" data-s="button">button</span></div>
   </div>
@@ -268,6 +285,16 @@ const hasThree = nums.includes(3);</code></pre></div>
     </div>
     <div class="bx outer" data-n="outer"><span>outer · дід</span><div class="bx middle" data-n="middle"><span>middle · батько</span><div class="bx inner" data-n="inner"><span>inner · клікни сюди</span></div></div></div>
     <div class="order" id="order"><span class="counter">Порядок спрацювання з’явиться тут</span></div>
+  </div>
+  <div class="stage">
+    <h3>Шпаргалка з подій</h3><div class="reference-grid compact-ref">
+      <article class="reference-card"><b>click</b><p>Натискання кнопки чи елемента.</p><code>button.addEventListener('click', handler)</code></article>
+      <article class="reference-card"><b>input · change</b><p>Ввід під час набору та підтверджена зміна значення.</p></article>
+      <article class="reference-card"><b>submit</b><p>Відправлення форми; <code>preventDefault()</code> скасовує стандартне перезавантаження.</p></article>
+      <article class="reference-card"><b>keydown</b><p>Натискання клавіші; ключ доступний у <code>event.key</code>.</p></article>
+      <article class="reference-card"><b>mouseover · mouseout</b><p>Курсор входить у межі елемента або залишає їх.</p></article>
+      <article class="reference-card"><b>Event та делегування</b><p><code>target</code> — джерело події, <code>currentTarget</code> — елемент з обробником. Подія проходить capture, target, bubbling. Делегування використовує спливання. <code>removeEventListener()</code> відписує той самий обробник.</p></article>
+    </div>
   </div>
   <div class="stage">
     <h3>Делегування подій</h3>
