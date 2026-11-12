@@ -276,6 +276,18 @@ item.remove();</code></pre></article>
     </div>
   </div>
   <div class="stage">
+    <h3>Подія submit</h3>
+    <p class="sub">Надішли форму: обробник перехопить подію через <code>preventDefault()</code>, тож сторінка не перезавантажиться.</p>
+    <form id="submitDemo" class="row submit-demo"><label for="submitName">Твоє ім’я</label><input id="submitName" name="name" placeholder="Наприклад, Оля" autocomplete="off" required><button type="submit" class="btn sm">Надіслати</button></form>
+    <p id="submitResult" class="msg" aria-live="polite">Результат з’явиться тут.</p>
+  </div>
+  <div class="stage">
+    <h3>Події mouseover та mouseout</h3>
+    <p class="sub">Наведи курсор на картку й забери його. Рахуємо входи та виходи за її межі; рух між дочірніми елементами не створює зайвих спрацювань.</p>
+    <div id="hoverDemo" class="hover-demo" tabindex="0" aria-describedby="hoverHelp"><strong data-hover-part="заголовок">Наведи курсор сюди</strong><span data-hover-part="пояснення">mouseover — вхід · mouseout — вихід</span><small id="hoverHelp">Події спливають від дочірнього елемента до цієї картки.</small></div>
+    <div class="hover-stats" aria-live="polite"><span class="counter">mouseover: <b id="overCount">0</b></span><span class="counter">mouseout: <b id="outCount">0</b></span><span class="counter" id="hoverLast">Ще не було подій</span></div>
+  </div>
+  <div class="stage">
     <h3>Спливання та занурення подій</h3>
     <div class="sub">Клікни по рожевому блоку. Подія проходить крізь усіх предків — у якому порядку, залежить від фази.</div>
     <div class="row" style="margin-bottom:12px">

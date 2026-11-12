@@ -653,6 +653,28 @@ if(innerWidth>700)$('#fo').style.display='block';
     const v=+e.target.value,c=$('#circle');c.style.width=c.style.height=v+'px';c.textContent=v;c.style.filter=`hue-rotate(${(v-30)*2}deg)`;
   }
   $('#circR').addEventListener('input',resizeCircle);
+
+  /* submit event */
+  const submitForm=$('#submitDemo');let submitCount=0;
+  function handleSubmitDemo(e){e.preventDefault();const name=$('#submitName').value.trim();submitCount++;$('#submitResult').textContent=`Форму оброблено для ${name} · submit №${submitCount}. Сторінка залишилася на місці.`;$('#submitResult').className='msg ok';}
+  submitForm.addEventListener('submit',handleSubmitDemo);
+  onCode(submitForm,()=>({title:'Обробка події submit',source:`const submitForm = $('#submitDemo');
+
+${sourceOf(handleSubmitDemo)}
+
+submitForm.addEventListener('submit', handleSubmitDemo);`}));
+
+  /* mouseover and mouseout */
+  const hoverDemo=$('#hoverDemo');let overCount=0,outCount=0;
+  function handleHoverBoundary(e){if(e.relatedTarget&&hoverDemo.contains(e.relatedTarget))return;const part=e.target.closest('[data-hover-part]')?.dataset.hoverPart||'картка';if(e.type==='mouseover')$('#overCount').textContent=++overCount;else $('#outCount').textContent=++outCount;$('#hoverLast').textContent=`${e.type}: ${part} (target), картка (currentTarget)`;}
+  hoverDemo.addEventListener('mouseover',handleHoverBoundary);
+  hoverDemo.addEventListener('mouseout',handleHoverBoundary);
+  onCode(hoverDemo,()=>({title:'Обробка mouseover та mouseout',source:`const hoverDemo = $('#hoverDemo');
+
+${sourceOf(handleHoverBoundary)}
+
+hoverDemo.addEventListener('mouseover', handleHoverBoundary);
+hoverDemo.addEventListener('mouseout', handleHoverBoundary);`}));
   onCode($('#demoForm'),()=>({title:'Реальні обробники поля та форми',source:`const nameIn = $('#nameIn');\n\n${sourceOf(onNameInput,onNameChange,greet,greetOnEnter)}\n\nnameIn.addEventListener('input', onNameInput);\nnameIn.addEventListener('change', onNameChange);\nnameIn.addEventListener('keydown', greetOnEnter);`}));
   onCode($('#circR'),()=>({title:'Реальний обробник повзунка',source:`const circle = $('#circle');\n\n${sourceOf(resizeCircle)}`}));
 
