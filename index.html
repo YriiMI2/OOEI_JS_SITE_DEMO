@@ -197,10 +197,9 @@ const hasThree = nums.includes(3);</code></pre></div>
   <header><span class="speaker speaker-2">Доповідач 2</span><span class="num">07</span><h2>Цикли</h2>
     <p>Цикл повторює дію, доки умова істинна. Натискай «Крок», щоб пройти по ітераціях по одній, або запусти автоплей.</p></header>
   <div class="stage">
-    <div class="tabs" id="loopTabs"><div class="tab on" data-m="for">for</div><div class="tab" data-m="while">while</div><div class="tab" data-m="of">for…of</div><div class="tab" data-m="each">forEach</div></div>
+    <div class="tabs" id="loopTabs"><div class="tab on" data-m="for">for</div><div class="tab" data-m="while">while</div><div class="tab" data-m="of">for…of</div></div>
     <div class="sub" id="loopDesc"></div>
     <div class="row" id="loopNRow"><span class="counter">Кількість повторів: <b id="loopN">5</b></span><input type="range" id="loopRange" min="3" max="10" value="5" style="max-width:240px"></div>
-    <div class="row" id="eachRow" style="display:none;margin:12px 0"><label for="eachInput" class="counter">Масив для forEach:</label><input id="eachInput" value="['яблуко', 'банан', 'вишня']" style="flex:1" autocomplete="off"><button class="btn sm" id="eachApply">Застосувати</button></div>
     <div class="track" id="track"></div>
     <div class="row" style="margin-bottom:14px"><button class="btn" id="lStep">Крок ▸</button><button class="btn alt" id="lPlay">▶ Автоплей</button><button class="btn ghost" id="lReset">↺ Скинути</button>
       <select id="lSpeed"><option value="1100">повільно</option><option value="650" selected>нормально</option><option value="280">швидко</option></select></div>
@@ -214,7 +213,7 @@ do { n++; } while (n &lt; 3);</code></pre></article>
       <article class="reference-card"><h3>for...in та for...of</h3><p><code>for...of</code> перебирає значення масиву; <code>for...in</code> — ключі/властивості об’єкта. Для масивів зазвичай використовуй for...of.</p><pre class="mini-code"><code>for (const fruit of fruits) { ... }
 for (const key in user) { ... }</code></pre></article>
       <article class="reference-card"><h3>Керування циклом</h3><p><code>break</code> повністю завершує цикл. <code>continue</code> пропускає решту поточної ітерації. <code>for</code> зручний для лічильника, <code>while</code> — коли кількість повторів залежить від умови.</p></article>
-      <article class="reference-card"><h3>Цикл чи метод масиву?</h3><p>Цикл дає гнучке керування потоком. <code>map</code>, <code>filter</code>, <code>find</code> виражають типову роботу з колекціями коротше; <code>forEach</code> виконує дію для кожного елемента.</p></article>
+      <article class="reference-card"><h3>Цикл чи метод масиву?</h3><p>Цикл дає гнучке керування потоком. <code>map</code>, <code>filter</code> і <code>find</code> виражають типову роботу з колекціями коротше; обирай їх, коли потрібен новий масив або пошук.</p></article>
     </div>
   </div>
 </section>

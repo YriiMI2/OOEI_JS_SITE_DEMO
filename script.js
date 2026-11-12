@@ -458,7 +458,7 @@ if(innerWidth>700)$('#fo').style.display='block';
     while:'while: повторюємо, доки умова істинна. Тут число щоразу ділиться навпіл, поки більше за 1.',
     of:'for…of: обходимо всі елементи колекції по черзі — без жодних лічильників.'
   };
-  let mode='for',n=5,frames=[],cells=[],k=-1,timer=null,eachValues=['яблуко','банан','вишня'];
+  let mode='for',n=5,frames=[],cells=[],k=-1,timer=null;
   function build(){
     frames=[];cells=[];
     if(mode==='for'){
@@ -467,18 +467,15 @@ if(innerWidth>700)$('#fo').style.display='block';
       frames.push({a:-1,v:[['i',n],['сума',sum]],c:`${n} < ${n}  → хибно`,t:false,l:`Цикл завершено. Підсумок: ${sum}`,done:true});
     }else if(mode==='while'){
       cells=[64,32,16,8,4,2,1];
-      cells.forEach((x,i)=>{
+      for(let i=0;i<cells.length;i++){
+        const x=cells[i];
         if(x>1)frames.push({a:i,v:[['x',x],['кроків',i]],c:`${x} > 1  → істина`,t:true,l:`x = ${x} → ділимо навпіл → ${x/2}`});
         else frames.push({a:-1,v:[['x',x],['кроків',i]],c:`${x} > 1  → хибно`,t:false,l:`Цикл завершено за ${i} кроків`,done:true});
-      });
+      }
     }else if(mode==='of'){
       cells=['🍎','🍌','🍒','🍇','🍓'];
-      cells.forEach((f,i)=>frames.push({a:i,v:[['fruit',f],['у кошику',i+1]],c:`є наступний елемент → ${f}`,t:true,l:`кладемо в кошик: ${f}`}));
+      for(let i=0;i<cells.length;i++){const fruit=cells[i];frames.push({a:i,v:[['fruit',fruit],['у кошику',i+1]],c:`є наступний елемент → ${fruit}`,t:true,l:`кладемо в кошик: ${fruit}`});}
       frames.push({a:-1,v:[['fruit','—'],['у кошику',cells.length]],c:'елементи закінчились',t:false,l:`Кошик повний: ${cells.join(' ')}`,done:true});
-    }else{
-      cells=eachValues.slice();
-      cells.forEach((value,i)=>frames.push({a:i,v:[['element',value],['index',i]],c:`${i} < ${cells.length}  → callback`,t:true,l:`forEach: element = ${value}, index = ${i}`}));
-      frames.push({a:-1,v:[['element','—'],['index','—']],c:'масив обійдено',t:false,l:`forEach завершено: ${cells.length} елемент(и)`,done:true});
     }
     k=-1;draw();
   }
@@ -505,8 +502,8 @@ if(innerWidth>700)$('#fo').style.display='block';
     timer=setInterval(step,+$('#lSpeed').value);step();
   }
   function setMode(m){
-    stop();mode=m;$$('#loopTabs .tab').forEach(t=>t.classList.toggle('on',t.dataset.m===m));
-    $('#loopDesc').textContent=m==='each'?'forEach викликає callback для кожного елемента масиву; callback отримує значення та індекс.':DESC[m];$('#loopNRow').style.display=m==='for'?'flex':'none';$('#eachRow').style.display=m==='each'?'flex':'none';build();
+    stop();mode=m;for(const tab of $$('#loopTabs .tab'))tab.classList.toggle('on',tab.dataset.m===m);
+    $('#loopDesc').textContent=DESC[m];$('#loopNRow').style.display=m==='for'?'flex':'none';build();
   }
   $('#loopTabs').addEventListener('click',e=>{const t=e.target.closest('.tab');if(t)setMode(t.dataset.m);});
   $('#lStep').onclick=()=>{stop();step();};
@@ -515,11 +512,10 @@ if(innerWidth>700)$('#fo').style.display='block';
   $('#lReset').onclick=reset;
   $('#lSpeed').onchange=()=>{if(timer){stop();play();}};
   $('#loopRange').addEventListener('input',e=>{stop();n=+e.target.value;$('#loopN').textContent=n;build();});
-  $('#eachApply').addEventListener('click',()=>{try{const parsed=parseAny($('#eachInput').value);if(!Array.isArray(parsed))throw new Error();eachValues=parsed;build();}catch{$('#lLog').innerHTML='<div style="color:var(--red)">Введи коректний масив, наприклад [\'a\', 2, true]</div>';}});
   onCode($('#loops .stage'),e=>{
     const target=e.target.closest('#lPlay,#lStep,#lReset,#loopTabs,#track,#lLog');
     const functions=target?.id==='lPlay'?[play,step,draw]:target?.id==='lStep'?[step,draw]:target?.id==='lReset'?[reset,draw]:[build,draw];
-    return{title:`Цикл ${mode==='each'?'forEach':mode==='of'?'for…of':mode} — логіка та вивід`,source:`const DESC={\n  for:'for: ми знаємо кількість повторів. Лічильник i росте на 1, доки i менший за ліміт; кожен крок додаємо i до суми.',\n  while:'while: повторюємо, доки умова істинна. Тут число щоразу ділиться навпіл, поки більше за 1.',\n  of:'for…of: обходимо всі елементи колекції по черзі — без жодних лічильників.'\n};\nlet mode='for',n=5,frames=[],cells=[],k=-1,timer=null,eachValues=['яблуко','банан','вишня'];\n\n${sourceOf(...functions)}`};
+    return{title:`Цикл ${mode==='of'?'for…of':mode} — логіка та вивід`,source:`const DESC={\n  for:'for: ми знаємо кількість повторів. Лічильник i росте на 1, доки i менший за ліміт; кожен крок додаємо i до суми.',\n  while:'while: повторюємо, доки умова істинна. Тут число щоразу ділиться навпіл, поки більше за 1.',\n  of:'for…of: обходимо всі елементи колекції по черзі — без жодних лічильників.'\n};\nlet mode='for',n=5,frames=[],cells=[],k=-1,timer=null;\n\n${sourceOf(...functions)}`};
   });
   setMode('for');
 })();
