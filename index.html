@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Як працює JavaScript — інтерактивна презентація</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="bar"></div>
+<nav>
+  <div class="logo"><span>JS</span>Як це працює</div>
+  <a href="#vars">Змінні</a><a href="#types">Типи даних</a><a href="#dynamic">Динамічна типізація</a>
+  <a href="#arrays">Масиви</a><a href="#objects">Об’єкти</a><a href="#cond">Умови</a><a href="#loops">Цикли</a>
+  <a href="#dom">DOM</a><a href="#events">Події</a>
+</nav>
+
+<header class="hero">
+  <div class="float" data-k="number" style="top:22%;left:8%;--r:-6deg">11</div>
+  <div class="float" data-k="string" style="top:30%;right:9%;--r:5deg;animation-delay:-2s">"привіт"</div>
+  <div class="float" data-k="boolean" style="bottom:26%;left:12%;--r:4deg;animation-delay:-4s">true</div>
+  <div class="float" data-k="array" style="bottom:22%;right:12%;--r:-4deg;animation-delay:-1s">[1, 2, 3]</div>
+  <div class="float" data-k="null" style="top:16%;left:42%;--r:3deg;animation-delay:-3s">null</div>
+  <div class="float" data-k="object" style="top:12%;right:24%;--r:-3deg;animation-delay:-5s;display:none" id="fo">{ a: 1 }</div>
+  <h1>Інтерактивна презентація <em>JavaScript</em></h1>
+  <div class="scroll-hint">гортай униз</div>
+</header>
+
+<main>
+
+<!-- 01 VARIABLES -->
+<section id="vars" class="topic reveal">
+  <header><span class="num">01</span><h2>Змінні</h2>
+    <p>Змінна — це підписана коробочка, у якій лежить значення. Створи кілька коробочок, спробуй змінити їхній вміст і подивись, чим <b>let</b>, <b>const</b> і <b>var</b> відрізняються.</p></header>
+  <div class="stage">
+    <div id="varForm" class="row">
+      <select id="varKind"><option>let</option><option>const</option><option>var</option></select>
+      <input id="varName" placeholder="назва" value="score" size="10" autocomplete="off">
+      <span class="eq">=</span>
+      <input id="varVal" placeholder="значення" value="100" size="12" autocomplete="off">
+      <button type="button" class="btn" id="varBtn">Створити змінну</button>
+    </div>
+    <div id="varMsg" class="msg"></div>
+    <div id="varShelf" class="shelf"></div>
+    <p class="hint">Спробуй: <b>const</b> → потім «присвоїти» нове значення. Або створи ще раз змінну з тією ж назвою через <b>let</b> і через <b>var</b>.</p>
+  </div>
+</section>
+
+<!-- 02 TYPES -->
+<section id="types" class="topic reveal">
+  <header><span class="num">02</span><h2>Типи даних</h2>
+    <p>Вісім «сортів» значень: сім примітивів і об’єкти. Клікни будь-який приклад або введи власне значення — JavaScript визначить його тип.</p></header>
+  <div class="stage">
+    <div class="grid g4" id="typeGrid"></div>
+  </div>
+  <div class="stage">
+    <h3>🔍 Аналізатор значень</h3>
+    <div class="sub">Пиши числа, "рядки в лапках", true, null, [1,2], {"a":1}… або тицяй приклади вище.</div>
+    <div id="anForm" class="row"><input id="anIn" value="11" style="flex:1;min-width:200px" autocomplete="off"><button type="button" class="btn" id="anBtn">Визначити тип</button></div>
+    <div class="anal" id="anal"></div>
+  </div>
+</section>
+
+<!-- 03 DYNAMIC -->
+<section id="dynamic" class="topic reveal">
+  <header><span class="num">03</span><h2>Динамічна типізація</h2>
+    <p>У JavaScript тип має <b>значення</b>, а не змінна. Одна й та сама змінна може бути то числом, то рядком, то масивом. А коли типи змішуються — JS мовчки перетворює їх.</p></header>
+  <div class="stage">
+    <h3>Одна змінна — багато типів</h3>
+    <div class="sub">Поклади в коробку <b style="font-family:var(--mono)">x</b> різні значення й дивись, як змінюється її «характер».</div>
+    <div class="dyn">
+      <div class="dynbox" id="dynbox" data-k="number"><div class="nm">змінна x містить:</div><div class="val" id="dynval">11</div><span class="pill" id="dyntype">number</span></div>
+      <div style="flex:1;min-width:240px">
+        <div class="row" id="dynbtns"></div>
+        <div class="trail" id="dyntrail"></div>
+        <div class="counter" style="margin-top:12px">Змін типу: <b id="dyncount">0</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="stage">
+    <h3>Магія приведення типів</h3>
+    <div class="sub">Впиши два значення й обери оператор. Результат часто дивує — і це нормально для JS.</div>
+    <div class="coerce"><input id="cL" value='"5"' autocomplete="off"><select id="cOp"></select><input id="cR" value="3" autocomplete="off"></div>
+    <p class="hint">Пиши власні значення: число — без лапок (<b>5</b>), рядок — у лапках (<b>"5"</b>), також true, null, undefined, [1,2], {"a":1}…</p>
+    <div class="result" id="cRes"></div>
+    <div class="row" style="margin-top:14px" id="cEx"></div>
+  </div>
+</section>
+
+<!-- 04 ARRAYS -->
+<section id="arrays" class="topic reveal">
+  <header><span class="num">04</span><h2>Масиви</h2>
+    <p>Впорядкована колекція значень. Кожен елемент має номер — <b>індекс</b>, і лічба починається з нуля. Додавай, видаляй і сортуй.</p></header>
+  <div class="stage">
+    <div class="arrinfo"><span class="pill" style="--c:var(--cyan)">довжина: <b id="arrLen">0</b></span><span id="arrNote" class="msg" style="margin:0"></span></div>
+    <div class="cells" id="cells"></div>
+    <div id="arrForm" class="row"><input id="arrIn" placeholder="значення" value="7" size="12" autocomplete="off">
+      <button class="btn sm" data-op="push">додати в кінець</button><button class="btn sm" data-op="unshift">додати на початок</button>
+      <button type="button" class="btn sm ghost" data-op="pop">забрати з кінця</button><button type="button" class="btn sm ghost" data-op="shift">забрати з початку</button></div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn sm alt" data-op="reverse">розвернути</button>
+      <button class="btn sm alt" data-op="sort">сортувати за замовчуванням</button>
+      <button class="btn sm alt" data-op="sortnum">сортувати за числами</button>
+      <button class="btn sm ghost" data-op="clear">очистити</button><button class="btn sm ghost" data-op="reset">скинути</button>
+    </div>
+    <div class="row" style="margin-top:16px"><span class="counter">Дістати елемент за індексом:</span><input type="number" id="arrIdx" value="2" style="width:80px"><button class="btn sm" id="arrGet">дістати</button><span id="arrGot" class="counter"></span></div>
+    <p class="hint">Чому «сортувати за замовчуванням» ставить 100 перед 25? Бо воно порівнює елементи як <b>рядки</b>! Спробуй обидва варіанти.</p>
+  </div>
+</section>
+
+<!-- 05 OBJECTS -->
+<section id="objects" class="topic reveal">
+  <header><span class="num">05</span><h2>Об’єкти</h2>
+    <p>Об’єкт — це набір пар «ключ → значення». Тут ключі мають <b>імена</b>, а не номери. Значенням може бути що завгодно: число, масив, навіть функція (метод).</p></header>
+  <div class="stage">
+    <div class="grid g2" style="align-items:start">
+      <div>
+        <div class="objcard"><div class="objhead"><span>👤 user</span><span id="objCount" style="color:var(--mute)"></span></div><div id="objRows"></div></div>
+        <div id="objForm" class="row" style="margin-top:14px"><input id="objKey" placeholder="ключ" size="8" value="city" autocomplete="off" style="flex:1"><input id="objVal" placeholder="значення" value="Львів" size="10" autocomplete="off" style="flex:1"><button type="button" class="btn sm" id="objBtn">додати / змінити</button></div>
+      </div>
+      <div>
+        <div class="sub" style="margin-bottom:6px"><b>Ключі об’єкта</b> (Object.keys)</div>
+        <div id="objKeys" style="margin-bottom:16px"></div>
+        <div class="sub" style="margin-bottom:6px"><b>Звернення до властивості</b> — клікни рядок</div>
+        <div class="access" id="objAccess">Обери властивість зліва 👈</div>
+        <div id="objMsg" class="msg"></div>
+      </div>
+    </div>
+    <p class="hint">Видали <b>name</b> і викличи метод — побачиш, що станеться, коли властивості немає. Спробуй «додати» вже наявний ключ — значення перезапишеться.</p>
+  </div>
+</section>
+
+<!-- 06 CONDITIONS -->
+<section id="cond" class="topic reveal">
+  <header><span class="num">06</span><h2>Умовні оператори</h2>
+    <p>Програма сама обирає шлях. JS перевіряє умови зверху вниз і виконує <b>першу</b>, що виявилась правдивою; решту пропускає.</p></header>
+  <div class="stage">
+    <h3>if · else if · else</h3>
+    <div class="sub">Крути повзунок температури й дивись, яка гілка спрацьовує.</div>
+    <div class="row" style="margin-bottom:16px"><span class="counter" style="min-width:150px">Температура: <b id="tVal">18</b>°C</span><input type="range" id="tRange" min="-20" max="42" value="18" style="flex:1"></div>
+    <div class="grid g2"><div class="scene" id="scene"></div><div class="chain" id="chain"></div></div>
+  </div>
+  <div class="stage">
+    <h3>switch</h3>
+    <div class="sub">Обери день тижня. Зверни увагу: кілька «case» підряд ділять один результат.</div>
+    <div class="days" id="days"></div>
+    <div id="swRows"></div>
+  </div>
+  <div class="stage">
+    <h3>Логічні оператори й тернарний оператор</h3>
+    <div class="row"><div class="tog on" id="tA"><div class="sw"></div>A</div><div class="tog" id="tB"><div class="sw"></div>B</div></div>
+    <div class="logic" id="logic"></div>
+  </div>
+</section>
+
+<!-- 07 LOOPS -->
+<section id="loops" class="topic reveal">
+  <header><span class="num">07</span><h2>Цикли</h2>
+    <p>Цикл повторює дію, доки умова істинна. Натискай «Крок», щоб пройти по ітераціях по одній, або запусти автоплей.</p></header>
+  <div class="stage">
+    <div class="tabs" id="loopTabs"><div class="tab on" data-m="for">for</div><div class="tab" data-m="while">while</div><div class="tab" data-m="of">for…of</div><div class="tab" data-m="each">forEach</div></div>
+    <div class="sub" id="loopDesc"></div>
+    <div class="row" id="loopNRow"><span class="counter">Кількість повторів: <b id="loopN">5</b></span><input type="range" id="loopRange" min="3" max="10" value="5" style="max-width:240px"></div>
+    <div class="row" id="eachRow" style="display:none;margin:12px 0"><label for="eachInput" class="counter">Масив для forEach:</label><input id="eachInput" value="['яблуко', 'банан', 'вишня']" style="flex:1" autocomplete="off"><button class="btn sm" id="eachApply">Застосувати</button></div>
+    <div class="track" id="track"></div>
+    <div class="row" style="margin-bottom:14px"><button class="btn" id="lStep">Крок ▸</button><button class="btn alt" id="lPlay">▶ Автоплей</button><button class="btn ghost" id="lReset">↺ Скинути</button>
+      <select id="lSpeed"><option value="1100">повільно</option><option value="650" selected>нормально</option><option value="280">швидко</option></select></div>
+    <div class="lpanel">
+      <div class="lbox"><small>Стан змінних</small><div id="lVars"></div><small style="margin-top:10px">Перевірка умови</small><div class="cond" id="lCond">—</div></div>
+      <div class="lbox"><small>Вивід (консоль)</small><div class="console" id="lLog"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 DOM -->
+<section id="dom" class="topic reveal">
+  <header><span class="num">08</span><h2>Взаємодія з веб-документом (DOM)</h2>
+    <p>Браузер перетворює HTML на дерево об’єктів — <b>DOM</b>. JavaScript може знаходити вузли, створювати нові, міняти текст і стилі та видаляти їх. Справа — справжня мініатюрна сторінка; зліва — її живе дерево.</p></header>
+  <div class="stage">
+    <div class="domwrap">
+      <div class="dompane"><small>Сторінка (клікни елемент, щоб обрати)</small><div id="sandbox"></div></div>
+      <div class="dompane tree"><small>DOM-дерево</small><div id="tree"></div></div>
+    </div>
+    <div id="domMsg" class="msg"></div>
+    <div class="tools">
+      <select id="domTag"><option value="p">p</option><option value="span">span</option><option value="li">li</option><option value="h1">h1</option><option value="h2">h2</option><option value="h3">h3</option><option value="h4">h4</option><option value="button">button</option><option value="div">div</option><option value="section">section</option><option value="article">article</option><option value="strong">strong</option><option value="em">em</option><option value="a">a</option><option value="img">img</option><option value="ul">ul</option><option value="ol">ol</option><option value="input">input</option><option value="label">label</option><option value="hr">hr</option></select>
+      <button class="btn sm" id="dAdd">+ Створити всередині обраного</button>
+      <button class="btn sm alt" id="dClass">Перемкнути клас</button>
+      <button class="btn sm alt" id="dStyle">Змінити стиль</button>
+      <button class="btn sm danger" id="dDel">Видалити</button>
+    </div>
+    <div class="tools"><input id="domText" value="Привіт від JavaScript!" autocomplete="off"><button class="btn sm" id="dText">Змінити текст</button></div>
+    <div class="tools"><input id="domSel" value="li" autocomplete="off" placeholder="CSS-селектор"><button class="btn sm" id="dFind">Знайти за селектором</button>
+      <span class="chip" data-s="li">li</span><span class="chip" data-s="p">p</span><span class="chip" data-s=".hl">.hl</span><span class="chip" data-s="button">button</span></div>
+  </div>
+</section>
+
+<!-- 09 EVENTS -->
+<section id="events" class="topic reveal">
+  <header><span class="num">09</span><h2>Події та їх обробка</h2>
+    <p>Подія — це сигнал: «користувач клікнув», «натиснув клавішу», «ввів текст». Обробник — функція, яка чекає на сигнал і реагує. Підпишись на події й подивись, що приходить.</p></header>
+  <div class="stage">
+    <h3>Підписка на події</h3>
+    <div class="sub">Став і знімай галочки — обробники реально додаються та видаляються. Лічильник показує, скільки разів подія спрацювала.</div>
+    <div class="evchecks" id="evChecks"></div>
+    <div class="grid g2">
+      <div class="pad" id="pad" tabindex="0"><div>Рухай мишею, клікай, крути колесо.<br><small>Для клавіш клікни сюди, щоб поле отримало фокус</small></div></div>
+      <div class="evlog" id="evLog"></div>
+    </div>
+  </div>
+  <div class="stage">
+    <h3>Поля вводу та форми</h3>
+    <div class="sub">Подія <b>input</b> спрацьовує на кожну літеру, <b>change</b> — коли поле втратило фокус. Натисни Enter у полі або кнопку — це вже подія keydown і click.</div>
+    <div class="grid g2">
+      <div>
+        <div id="demoForm" class="row"><input id="nameIn" placeholder="Твоє ім’я" style="flex:1" autocomplete="off"><button type="button" class="btn sm" id="greetBtn">Привітатися</button></div>
+        <div class="counter" style="margin-top:10px">input: <b id="cInput">0</b> · change: <b id="cChange">0</b></div>
+        <div class="msg ok" id="echo" style="font-size:1rem"></div>
+      </div>
+      <div><div class="counter">Повзунок теж керується подією input:</div><div class="circle" id="circle">50</div><input type="range" id="circR" min="30" max="160" value="90"></div>
+    </div>
+  </div>
+  <div class="stage">
+    <h3>Спливання та занурення подій</h3>
+    <div class="sub">Клікни по рожевому блоку. Подія проходить крізь усіх предків — у якому порядку, залежить від фази.</div>
+    <div class="row" style="margin-bottom:12px">
+      <label class="tog on" id="phBubble"><input type="radio" name="phase" value="bubble" checked hidden><div class="sw"></div>спливання (за замовч.)</label>
+      <label class="tog" id="phCapture"><input type="radio" name="phase" value="capture" hidden><div class="sw"></div>занурення (capture)</label>
+      <label class="tog" id="stopTog"><input type="checkbox" id="stopMid" hidden><div class="sw"></div>Stop Propagation</label>
+      <label class="counter" for="stopTarget">Зупинити на:</label><select id="stopTarget"><option value="inner">inner</option><option value="middle" selected>middle</option><option value="outer">outer</option></select>
+    </div>
+    <div class="bx outer" data-n="outer"><span>outer · дід</span><div class="bx middle" data-n="middle"><span>middle · батько</span><div class="bx inner" data-n="inner"><span>inner · клікни сюди</span></div></div></div>
+    <div class="order" id="order"><span class="counter">Порядок спрацювання з’явиться тут</span></div>
+  </div>
+  <div class="stage">
+    <h3>Делегування подій</h3>
+    <div class="sub">Один обробник на списку обслуговує всі елементи — навіть ті, що з’явилися пізніше.</div>
+    <ul id="deleList"></ul>
+    <div class="row"><button class="btn sm" id="deleAdd">+ Додати елемент</button><span class="counter">Обробників на сторінці: <b>1</b> · елементів: <b id="deleN">0</b></span></div>
+    <div class="msg" id="deleMsg"></div>
+  </div>
+</section>
+
+</main>
+
+<dialog id="codeDialog" class="code-dialog" aria-labelledby="codeTitle">
+  <div class="code-head"><div><span class="code-kicker">ПОЯСНЕННЯ КОДУ</span><h2 id="codeTitle">Як це працює</h2></div><button class="btn sm ghost" id="codeClose" type="button" aria-label="Закрити вікно">✕</button></div>
+  <p class="code-note">Фрагмент реального коду сторінки. Це вікно лише показує його й нічого не виконує.</p>
+  <pre class="code-view"><code id="codeSource"></code></pre>
+</dialog>
+
+<footer>
+  <h3>Це лише початок 🚀</h3>
+  <p>Клацни правою кнопкою миші на інтерактивних елементах, щоб подивитися, як вони працюють у коді.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
