@@ -120,7 +120,7 @@ addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=
 (function(){
   const sb=$('#sandbox'),treeEl=$('#tree'),msg=$('#domMsg');
   sb.innerHTML='<h3>Привіт, DOM!</h3><p>Це звичайний абзац.</p><ul><li>Перший пункт</li><li>Другий пункт</li></ul><button>Кнопка</button>';
-  let sel=null,nodes=[];
+  let sel=null,textSel=null,nodes=[],textNodes=[];
   function walk(el,root){
     const idx=nodes.push(el)-1;
     const cls=[...el.classList].map(c=>'.'+c).join('');
@@ -128,21 +128,31 @@ addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=
     let kids='';
     el.childNodes.forEach(n=>{
       if(n.nodeType===1)kids+=walk(n,false);
-      else if(n.nodeType===3&&n.textContent.trim())kids+=`<li class="tn-text">"${esc(n.textContent.trim())}"</li>`;
+      else if(n.nodeType===3&&n.textContent.trim()){
+        const textIndex=textNodes.push(n)-1;
+        kids+=`<li><span class="tn-text${n===textSel?' sel':''}" data-text-i="${textIndex}">"${esc(n.textContent.trim())}"</span></li>`;
+      }
     });
     return `<li><span class="tn${el===sel?' sel':''}" data-i="${idx}">&lt;${esc(tag)}&gt;</span>${kids?'<ul>'+kids+'</ul>':''}</li>`;
   }
   function refresh(){
-    nodes=[];treeEl.innerHTML='<ul>'+walk(sb,true)+'</ul>';
+    nodes=[];textNodes=[];treeEl.innerHTML='<ul>'+walk(sb,true)+'</ul>';
     $$('[data-sel]',sb).forEach(x=>x.removeAttribute('data-sel'));sb.removeAttribute('data-sel');
     if(sel&&sel!==sb)sel.setAttribute('data-sel','');
   }
   const name=el=>el===sb?'контейнер #sandbox':'<'+el.tagName.toLowerCase()+'>';
-  function select(el){sel=el;refresh();say(msg,sel?'Обрано '+name(sel):'',true);}
+  function select(el){sel=el;textSel=null;refresh();say(msg,sel?'Обрано '+name(sel):'',true);}
+  function selectText(node){sel=null;textSel=node;refresh();say(msg,`Обрано текст: «${node.textContent.trim()}»`,true);}
   sb.addEventListener('click',e=>{e.preventDefault();select(e.target===sb?sb:e.target);});
-  treeEl.addEventListener('click',e=>{const t=e.target.closest('.tn');if(t)select(nodes[+t.dataset.i]);});
-  const need=()=>{if(!sel){say(msg,'Спершу обери елемент (клікни на сторінці або в дереві)',false);return false;}return true;};
+  treeEl.addEventListener('click',e=>{
+    const text=e.target.closest('.tn-text[data-text-i]');
+    if(text){selectText(textNodes[+text.dataset.textI]);return;}
+    const t=e.target.closest('.tn');if(t)select(nodes[+t.dataset.i]);
+  });
+  const need=()=>{if(!sel&&!textSel){say(msg,'Спершу обери елемент або текст (клікни на сторінці чи в дереві)',false);return false;}return true;};
+  const needElement=()=>{if(!need())return false;if(textSel){say(msg,'Цю дію можна виконати лише з HTML-елементом',false);return false;}return true;};
   function addElement(){
+    if(textSel)return say(msg,'Щоб додати елемент, обери тег у DOM-дереві або на сторінці',false);
     const parent=sel||sb,tag=$('#domTag').value,el=document.createElement(tag);
     if(['img','input','hr'].includes(parent.tagName.toLowerCase()))return say(msg,`${name(parent)} не може містити дочірні елементи`,false);
     const labels={p:'Новий абзац',span:'span-текст',li:'Новий пункт',h1:'Новий заголовок',h2:'Новий заголовок',h3:'Новий заголовок',h4:'Новий заголовок',button:'Кнопка',div:'Новий блок',section:'Новий розділ',article:'Нова стаття',strong:'Виділений текст',em:'Курсивний текст',ul:'Новий список',ol:'Нумерований список',label:'Підпис до поля'};
@@ -155,16 +165,24 @@ addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=
     }else if(tag==='button'){
       el.type='button';el.textContent=labels[tag];
     }else if(tag!=='hr')el.textContent=labels[tag]||`Новий елемент <${tag}>`;
-    parent.appendChild(el);sel=el;refresh();say(msg,`createElement("${tag}") + appendChild → додано в ${name(parent)}`,true);
+    parent.appendChild(el);sel=el;textSel=null;refresh();say(msg,`createElement("${tag}") + appendChild → додано в ${name(parent)}`,true);
   }
-  function toggleClass(){if(!need())return;if(sel===sb)return say(msg,'Обери вкладений елемент',false);const on=sel.classList.toggle('hl');refresh();say(msg,on?'Клас .hl додано':'Клас .hl прибрано',true);}
+  function toggleClass(){if(!needElement())return;if(sel===sb)return say(msg,'Обери вкладений елемент',false);const on=sel.classList.toggle('hl');refresh();say(msg,on?'Клас .hl додано':'Клас .hl прибрано',true);}
   function changeStyle(){
-    if(!need())return;if(sel===sb)return say(msg,'Обери вкладений елемент',false);
+    if(!needElement())return;if(sel===sb)return say(msg,'Обери вкладений елемент',false);
     const h=Math.floor(Math.random()*360);sel.style.backgroundColor=`hsl(${h} 80% 80%)`;sel.style.color=`hsl(${h} 60% 25%)`;sel.style.borderRadius='8px';sel.style.padding='4px 8px';
     refresh();say(msg,'Стиль змінено напряму через style',true);
   }
-  function deleteElement(){if(!need())return;if(sel===sb)return say(msg,'Контейнер видаляти не будемо 🙂',false);const n=name(sel);sel.remove();sel=null;refresh();say(msg,`${n} видалено з документа`,true);}
-  function changeText(){if(!need())return;sel.textContent=$('#domText').value;refresh();say(msg,'Текст змінено. Увага: якщо в елемента були діти — вони зникли разом зі старим вмістом',true);}
+  function deleteElement(){
+    if(!need())return;
+    if(textSel){const content=textSel.textContent.trim();textSel.parentNode.removeChild(textSel);textSel=null;refresh();say(msg,`Текст «${content}» видалено з документа`,true);return;}
+    if(sel===sb)return say(msg,'Контейнер видаляти не будемо 🙂',false);const n=name(sel);sel.remove();sel=null;refresh();say(msg,`${n} видалено з документа`,true);
+  }
+  function changeText(){
+    if(!need())return;
+    if(textSel){textSel.textContent=$('#domText').value;refresh();say(msg,'Текстовий вузол змінено',true);return;}
+    sel.textContent=$('#domText').value;refresh();say(msg,'Текст змінено. Увага: якщо в елемента були діти — вони зникли разом зі старим вмістом',true);
+  }
   $('#dAdd').onclick=addElement;$('#dClass').onclick=toggleClass;$('#dStyle').onclick=changeStyle;$('#dDel').onclick=deleteElement;$('#dText').onclick=changeText;
   function find(){
     $$('[data-match]',sb).forEach(x=>x.removeAttribute('data-match'));

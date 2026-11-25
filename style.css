@@ -206,7 +206,7 @@ main{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 20px}
 .tree li{margin:3px 0;font-family:var(--mono);font-size:.82rem}
 .tn{cursor:pointer;padding:1px 6px;border-radius:6px;color:var(--cyan);transition:.15s}.tn:hover{background:rgba(34,211,238,.12)}
 .tn.sel{background:rgba(247,223,30,.2);color:var(--js)}
-.tn-text{color:var(--green)}.tn-text::before{content:"#text ";color:var(--mute)}
+.tn-text{color:var(--green);cursor:pointer;padding:1px 6px;border-radius:6px}.tn-text::before{content:"#text ";color:var(--mute)}.tn-text:hover{background:rgba(52,211,153,.1)}.tn-text.sel{background:rgba(52,211,153,.2);outline:1px solid rgba(52,211,153,.45)}
 .tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
 .tools input{flex:1;min-width:120px}
 
