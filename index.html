@@ -11,16 +11,24 @@
 </head>
 <body>
 <div id="bar"></div>
-
-<header class="hero">
-  <div class="float" data-k="number" style="top:22%;left:8%;--r:-6deg">11</div>
-  <div class="float" data-k="string" style="top:30%;right:9%;--r:5deg;animation-delay:-2s">"привіт"</div>
-  <div class="float" data-k="boolean" style="bottom:26%;left:12%;--r:4deg;animation-delay:-4s">true</div>
-  <div class="float" data-k="array" style="bottom:22%;right:12%;--r:-4deg;animation-delay:-1s">[1, 2, 3]</div>
-  <div class="float" data-k="null" style="top:16%;left:42%;--r:3deg;animation-delay:-3s">null</div>
-  <div class="float" data-k="object" style="top:12%;right:24%;--r:-3deg;animation-delay:-5s;display:none" id="fo">{ a: 1 }</div>
-  <div class="scroll-hint">гортай униз</div>
-</header>
+<div id="ambient" aria-hidden="true">
+  <span class="float" data-k="number" style="--x:4%;--y:15%;--dx:14px;--dy:-18px;--delay:-2s">11</span>
+  <span class="float" data-k="string" style="--x:82%;--y:12%;--dx:-16px;--dy:12px;--delay:-5s">"привіт"</span>
+  <span class="float" data-k="boolean" style="--x:88%;--y:36%;--dx:-12px;--dy:-20px;--delay:-8s">true</span>
+  <span class="float" data-k="array" style="--x:5%;--y:51%;--dx:18px;--dy:14px;--delay:-3s">[1, 2, 3]</span>
+  <span class="float" data-k="null" style="--x:86%;--y:67%;--dx:-18px;--dy:-12px;--delay:-6s">null</span>
+  <span class="float" data-k="object" style="--x:8%;--y:82%;--dx:12px;--dy:-16px;--delay:-9s">{ a: 1 }</span>
+  <span class="float" data-k="method" style="--x:72%;--y:25%;--dx:-14px;--dy:18px;--delay:-4s">.map()</span>
+  <span class="float" data-k="method" style="--x:18%;--y:29%;--dx:16px;--dy:-14px;--delay:-7s">.filter()</span>
+  <span class="float" data-k="method" style="--x:78%;--y:52%;--dx:-12px;--dy:16px;--delay:-1s">.reduce()</span>
+  <span class="float" data-k="event" style="--x:24%;--y:68%;--dx:14px;--dy:-18px;--delay:-10s">click</span>
+  <span class="float" data-k="event" style="--x:58%;--y:84%;--dx:-16px;--dy:12px;--delay:-5s">keydown</span>
+  <span class="float" data-k="event" style="--x:40%;--y:17%;--dx:12px;--dy:18px;--delay:-8s">submit</span>
+  <span class="float" data-k="method" style="--x:46%;--y:43%;--dx:-18px;--dy:-12px;--delay:-3s">querySelector()</span>
+  <span class="float" data-k="event" style="--x:66%;--y:72%;--dx:16px;--dy:-16px;--delay:-6s">addEventListener</span>
+  <span class="float" data-k="function" style="--x:34%;--y:91%;--dx:-12px;--dy:14px;--delay:-9s">() =&gt; { }</span>
+  <span class="float" data-k="undefined" style="--x:13%;--y:41%;--dx:16px;--dy:16px;--delay:-2s">undefined</span>
+</div>
 
 <main>
 
@@ -35,7 +43,7 @@
 <!-- 07 LOOPS -->
 <!-- 08 DOM -->
 <section id="dom" class="topic reveal">
-  <header><span class="speaker speaker-3">Доповідач 3</span><span class="num">08</span><h2>Взаємодія з веб-документом (DOM)</h2>
+  <header><h2>Взаємодія з веб-документом (DOM)</h2>
     <p>Браузер перетворює HTML на дерево об’єктів — <b>DOM</b>. JavaScript може знаходити вузли, створювати нові, міняти текст і стилі та видаляти їх. Справа — справжня мініатюрна сторінка; зліва — її живе дерево.</p></header>
   <div class="stage">
     <div class="domwrap">
@@ -67,7 +75,7 @@ item.remove();</code></pre></article>
 
 <!-- 09 EVENTS -->
 <section id="events" class="topic reveal">
-  <header><span class="speaker speaker-3">Доповідач 3</span><span class="num">09</span><h2>Події та їх обробка</h2>
+  <header><h2>Події та їх обробка</h2>
     <p>Подія — це сигнал: «користувач клікнув», «натиснув клавішу», «ввів текст». Обробник — функція, яка чекає на сигнал і реагує. Підпишись на події й подивись, що приходить.</p></header>
   <div class="stage">
     <h3>Підписка на події</h3>

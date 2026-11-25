@@ -136,10 +136,6 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.targe
 $$('.reveal').forEach(el=>io.observe(el));
 const bar=$('#bar');
 addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=(scrollY/Math.max(1,h.scrollHeight-innerHeight)*100)+'%';},{passive:true});
-const navLinks=$$('nav a');
-const so=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)navLinks.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id));}),{rootMargin:'-45% 0px -50% 0px'});
-$$('section.topic').forEach(s=>so.observe(s));
-if(innerWidth>700)$('#fo').style.display='block';
 
 /* ===== 08 DOM ===== */
 (function(){
