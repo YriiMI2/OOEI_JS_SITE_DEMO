@@ -12,22 +12,21 @@
 <body>
 <div id="bar"></div>
 <div id="ambient" aria-hidden="true">
-  <span class="float" data-k="number" style="--x:4%;--y:15%;--dx:14px;--dy:-18px;--delay:-2s">11</span>
-  <span class="float" data-k="string" style="--x:82%;--y:12%;--dx:-16px;--dy:12px;--delay:-5s">"привіт"</span>
-  <span class="float" data-k="boolean" style="--x:88%;--y:36%;--dx:-12px;--dy:-20px;--delay:-8s">true</span>
-  <span class="float" data-k="array" style="--x:5%;--y:51%;--dx:18px;--dy:14px;--delay:-3s">[1, 2, 3]</span>
-  <span class="float" data-k="null" style="--x:86%;--y:67%;--dx:-18px;--dy:-12px;--delay:-6s">null</span>
-  <span class="float" data-k="object" style="--x:8%;--y:82%;--dx:12px;--dy:-16px;--delay:-9s">{ a: 1 }</span>
-  <span class="float" data-k="method" style="--x:72%;--y:25%;--dx:-14px;--dy:18px;--delay:-4s">.map()</span>
-  <span class="float" data-k="method" style="--x:18%;--y:29%;--dx:16px;--dy:-14px;--delay:-7s">.filter()</span>
-  <span class="float" data-k="method" style="--x:78%;--y:52%;--dx:-12px;--dy:16px;--delay:-1s">.reduce()</span>
-  <span class="float" data-k="event" style="--x:24%;--y:68%;--dx:14px;--dy:-18px;--delay:-10s">click</span>
-  <span class="float" data-k="event" style="--x:58%;--y:84%;--dx:-16px;--dy:12px;--delay:-5s">keydown</span>
-  <span class="float" data-k="event" style="--x:40%;--y:17%;--dx:12px;--dy:18px;--delay:-8s">submit</span>
-  <span class="float" data-k="method" style="--x:46%;--y:43%;--dx:-18px;--dy:-12px;--delay:-3s">querySelector()</span>
-  <span class="float" data-k="event" style="--x:66%;--y:72%;--dx:16px;--dy:-16px;--delay:-6s">addEventListener</span>
-  <span class="float" data-k="function" style="--x:34%;--y:91%;--dx:-12px;--dy:14px;--delay:-9s">() =&gt; { }</span>
-  <span class="float" data-k="undefined" style="--x:13%;--y:41%;--dx:16px;--dy:16px;--delay:-2s">undefined</span>
+  <span class="float" data-k="number" style="--x:4%;--y:15%;--dx:18px;--dy:-22px;--delay:-2s">11</span>
+  <span class="float" data-k="string" style="--x:82%;--y:12%;--dx:-20px;--dy:15px;--delay:-5s">"привіт"</span>
+  <span class="float" data-k="boolean" style="--x:88%;--y:36%;--dx:-15px;--dy:-25px;--delay:-8s">true</span>
+  <span class="float" data-k="array" style="--x:5%;--y:51%;--dx:22px;--dy:18px;--delay:-3s">[1, 2, 3]</span>
+  <span class="float" data-k="null" style="--x:86%;--y:67%;--dx:-22px;--dy:-15px;--delay:-6s">null</span>
+  <span class="float" data-k="object" style="--x:8%;--y:82%;--dx:15px;--dy:-20px;--delay:-9s">{ a: 1 }</span>
+  <span class="float" data-k="method" style="--x:72%;--y:25%;--dx:-18px;--dy:22px;--delay:-4s">.map()</span>
+  <span class="float" data-k="method" style="--x:18%;--y:29%;--dx:20px;--dy:-18px;--delay:-7s">.filter()</span>
+  <span class="float" data-k="method" style="--x:78%;--y:52%;--dx:-15px;--dy:20px;--delay:-1s">.reduce()</span>
+  <span class="float" data-k="event" style="--x:24%;--y:68%;--dx:18px;--dy:-22px;--delay:-10s">click</span>
+  <span class="float" data-k="event" style="--x:40%;--y:17%;--dx:15px;--dy:22px;--delay:-8s">submit</span>
+  <span class="float" data-k="method" style="--x:46%;--y:43%;--dx:-22px;--dy:-15px;--delay:-3s">querySelector()</span>
+  <span class="float" data-k="event" style="--x:66%;--y:72%;--dx:20px;--dy:-20px;--delay:-6s">addEventListener</span>
+  <span class="float" data-k="function" style="--x:34%;--y:91%;--dx:-15px;--dy:18px;--delay:-9s">() =&gt; { }</span>
+  <span class="float" data-k="undefined" style="--x:13%;--y:41%;--dx:20px;--dy:20px;--delay:-2s">undefined</span>
 </div>
 
 <main>
@@ -44,8 +43,9 @@
 <!-- 08 DOM -->
 <section id="dom" class="topic reveal">
   <header><h2>Взаємодія з веб-документом (DOM)</h2>
-    <p>Браузер перетворює HTML на дерево об’єктів — <b>DOM</b>. JavaScript може знаходити вузли, створювати нові, міняти текст і стилі та видаляти їх. Справа — справжня мініатюрна сторінка; зліва — її живе дерево.</p></header>
+    <p><b>DOM</b> — об’єктна модель документа, деревоподібне представлення HTML. Браузер створює її під час розбору HTML і відкриває JavaScript через Web API. Глобальний об’єкт <code>document</code> дає змогу знаходити елементи, змінювати їх і створювати нові.</p></header>
   <div class="stage">
+    <div class="dom-code-trigger-row"><button type="button" id="openDomCode" class="dom-code-trigger" aria-label="Відкрити код DOM"><span aria-hidden="true">&lt;/&gt;</span> код</button></div>
     <div class="domwrap">
       <div class="dompane"><small>Сторінка (клікни елемент, щоб обрати)</small><div id="sandbox"></div></div>
       <div class="dompane tree"><small>DOM-дерево</small><div id="tree"></div></div>
@@ -58,15 +58,15 @@
       <button class="btn sm alt" id="dStyle">Змінити стиль</button>
       <button class="btn sm danger" id="dDel">Видалити</button>
     </div>
-    <div class="tools"><input id="domText" value="Привіт від JavaScript!" autocomplete="off"><button class="btn sm" id="dText">Змінити текст</button></div>
+    <div class="tools"><input id="domText" value="Текст для зміни" autocomplete="off"><button class="btn sm" id="dText">Змінити текст</button></div>
     <div class="reference-grid compact-ref">
-      <article class="reference-card"><h3>Як працює DOM</h3><p>Браузер розбирає HTML і створює дерево вузлів. Елементи — вузли з тегами; текст і атрибути теж представлені у DOM. JavaScript знаходить їх і змінює під час роботи сторінки.</p><pre class="mini-code"><code>document.getElementById('app')
-document.querySelector('.card')
-document.querySelectorAll('li')</code></pre></article>
-      <article class="reference-card"><h3>Зміна та створення</h3><p><code>textContent</code> задає звичайний текст. <code>innerHTML</code> читає або задає розмітку. Стилі: <code>style</code>; класи: <code>classList.add/remove/toggle</code>. Атрибути: <code>getAttribute/setAttribute/removeAttribute</code>.</p><pre class="mini-code"><code>const item = document.createElement('li');
-item.textContent = 'Новий пункт';
-list.append(item); // або appendChild(item)
-item.remove();</code></pre></article>
+      <article class="reference-card"><h3>Як працює DOM</h3><p>Браузер розбирає HTML і створює дерево вузлів. Елементи можуть містити вкладені елементи й текст. Об’єкт <code>document</code> надає JavaScript доступ до цієї структури через Web API.</p><pre class="mini-code"><code>window.document
+document.documentElement
+document.body</code></pre></article>
+      <article class="reference-card"><h3>Зміна та створення</h3><p>Знайди потрібний вузол, зміни його текст, класи або стилі. Нові вузли створюй через <code>createElement</code> і додавай методом <code>append</code> чи <code>appendChild</code>; непотрібні прибирай через <code>remove</code>.</p><pre class="mini-code"><code>const item = document.createElement('li')
+item.textContent = 'Новий пункт'
+list.append(item)
+item.remove()</code></pre></article>
     </div>
     <div class="tools"><input id="domSel" value="li" autocomplete="off" placeholder="CSS-селектор"><button class="btn sm" id="dFind">Знайти за селектором</button>
       <span class="chip" data-s="li">li</span><span class="chip" data-s="p">p</span><span class="chip" data-s=".hl">.hl</span><span class="chip" data-s="button">button</span></div>
@@ -78,6 +78,7 @@ item.remove();</code></pre></article>
   <header><h2>Події та їх обробка</h2>
     <p>Подія — це сигнал: «користувач клікнув», «натиснув клавішу», «ввів текст». Обробник — функція, яка чекає на сигнал і реагує. Підпишись на події й подивись, що приходить.</p></header>
   <div class="stage">
+    <div class="dom-code-trigger-row"><button type="button" id="openEventCode" class="dom-code-trigger" aria-label="Відкрити код подій"><span aria-hidden="true">&lt;/&gt;</span> код</button></div>
     <h3>Підписка на події</h3>
     <div class="sub">Став і знімай галочки — обробники реально додаються та видаляються. Лічильник показує, скільки разів подія спрацювала.</div>
     <div class="evchecks" id="evChecks"></div>
@@ -88,7 +89,7 @@ item.remove();</code></pre></article>
   </div>
   <div class="stage">
     <h3>Поля вводу та форми</h3>
-    <div class="sub">Подія <b>input</b> спрацьовує на кожну літеру, <b>change</b> — коли поле втратило фокус. Натисни Enter у полі або кнопку — це вже подія keydown і click.</div>
+    <div class="sub">Подія <b>input</b> спрацьовує на кожну літеру, <b>change</b> — коли поле втратило фокус. Натисни кнопку, щоб побачити обробку click.</div>
     <div class="grid g2">
       <div>
         <div id="demoForm" class="row"><input id="nameIn" placeholder="Твоє ім’я" style="flex:1" autocomplete="off"><button type="button" class="btn sm" id="greetBtn">Привітатися</button></div>
@@ -100,37 +101,9 @@ item.remove();</code></pre></article>
   </div>
   <div class="stage">
     <h3>Подія submit</h3>
-    <p class="sub">Надішли форму: обробник перехопить подію через <code>preventDefault()</code>, тож сторінка не перезавантажиться.</p>
+    <p class="sub">Після перевірки обов’язкових полів браузер зазвичай надсилає дані форми за її адресою (<code>action</code>) і показує відповідь сервера — це може відкрити іншу сторінку або повернути оновлену. Обробник викликає <code>preventDefault()</code>, скасовує стандартне надсилання й показує результат тут.</p>
     <form id="submitDemo" class="row submit-demo"><label for="submitName">Твоє ім’я</label><input id="submitName" name="name" placeholder="Наприклад, Оля" autocomplete="off" required><button type="submit" class="btn sm">Надіслати</button></form>
     <p id="submitResult" class="msg" aria-live="polite">Результат з’явиться тут.</p>
-  </div>
-  <div class="stage">
-    <h3>Події mouseover та mouseout</h3>
-    <p class="sub">Наведи курсор на картку й забери його. Рахуємо входи та виходи за її межі; рух між дочірніми елементами не створює зайвих спрацювань.</p>
-    <div id="hoverDemo" class="hover-demo" tabindex="0" aria-describedby="hoverHelp"><strong data-hover-part="заголовок">Наведи курсор сюди</strong><span data-hover-part="пояснення">mouseover — вхід · mouseout — вихід</span><small id="hoverHelp">Події спливають від дочірнього елемента до цієї картки.</small></div>
-    <div class="hover-stats" aria-live="polite"><span class="counter">mouseover: <b id="overCount">0</b></span><span class="counter">mouseout: <b id="outCount">0</b></span><span class="counter" id="hoverLast">Ще не було подій</span></div>
-  </div>
-  <div class="stage">
-    <h3>Спливання та занурення подій</h3>
-    <div class="sub">Клікни по рожевому блоку. Подія проходить крізь усіх предків — у якому порядку, залежить від фази.</div>
-    <div class="row" style="margin-bottom:12px">
-      <label class="tog on" id="phBubble"><input type="radio" name="phase" value="bubble" checked hidden><div class="sw"></div>спливання (за замовч.)</label>
-      <label class="tog" id="phCapture"><input type="radio" name="phase" value="capture" hidden><div class="sw"></div>занурення (capture)</label>
-      <label class="tog" id="stopTog"><input type="checkbox" id="stopMid" hidden><div class="sw"></div>Stop Propagation</label>
-      <label class="counter" for="stopTarget">Зупинити на:</label><select id="stopTarget"><option value="inner">inner</option><option value="middle" selected>middle</option><option value="outer">outer</option></select>
-    </div>
-    <div class="bx outer" data-n="outer"><span>outer · дід</span><div class="bx middle" data-n="middle"><span>middle · батько</span><div class="bx inner" data-n="inner"><span>inner · клікни сюди</span></div></div></div>
-    <div class="order" id="order"><span class="counter">Порядок спрацювання з’явиться тут</span></div>
-  </div>
-  <div class="stage">
-    <h3>Шпаргалка з подій</h3><div class="reference-grid compact-ref">
-      <article class="reference-card"><b>click</b><p>Натискання кнопки чи елемента.</p><code>button.addEventListener('click', handler)</code></article>
-      <article class="reference-card"><b>input · change</b><p>Ввід під час набору та підтверджена зміна значення.</p></article>
-      <article class="reference-card"><b>submit</b><p>Відправлення форми; <code>preventDefault()</code> скасовує стандартне перезавантаження.</p></article>
-      <article class="reference-card"><b>keydown</b><p>Натискання клавіші; ключ доступний у <code>event.key</code>.</p></article>
-      <article class="reference-card"><b>mouseover · mouseout</b><p>Курсор входить у межі елемента або залишає їх.</p></article>
-      <article class="reference-card"><b>Event та делегування</b><p><code>target</code> — джерело події, <code>currentTarget</code> — елемент з обробником. Подія проходить capture, target, bubbling. Делегування використовує спливання. <code>removeEventListener()</code> відписує той самий обробник.</p></article>
-    </div>
   </div>
   <div class="stage">
     <h3>Делегування подій</h3>
@@ -143,16 +116,27 @@ item.remove();</code></pre></article>
 
 </main>
 
-<dialog id="codeDialog" class="code-dialog" aria-labelledby="codeTitle">
-  <div class="code-head"><div><span class="code-kicker">ПОЯСНЕННЯ КОДУ</span><h2 id="codeTitle">Як це працює</h2></div><button class="btn sm ghost" id="codeClose" type="button" aria-label="Закрити вікно">✕</button></div>
-  <p class="code-note">Фрагмент реального коду сторінки. Це вікно лише показує його й нічого не виконує.</p>
-  <pre class="code-view"><code id="codeSource"></code></pre>
+<dialog id="domDialog" class="dom-code-dialog" aria-labelledby="domDialogTitle">
+  <div class="dom-code-shell">
+    <header class="dom-code-head"><h2 id="domDialogTitle">Взаємодія з веб-документом (DOM)</h2><button class="btn sm ghost" id="domCodeClose" type="button" aria-label="Закрити вікно">✕</button></header>
+    <pre class="dom-code-view"><code id="domCodeSource"></code></pre>
+  </div>
 </dialog>
 
-<footer>
-  <h3>Це лише початок 🚀</h3>
-  <p>Клацни правою кнопкою миші на інтерактивних елементах, щоб подивитися, як вони працюють у коді.</p>
-</footer>
+<dialog id="eventCodeDialog" class="dom-code-dialog" aria-labelledby="eventCodeTitle">
+  <div class="event-code-shell">
+    <aside class="event-code-topics" id="eventCodeTopics" aria-label="Розділи коду подій">
+      <button type="button" data-event-topic="basics">Події браузера</button>
+      <button type="button" data-event-topic="listeners">addEventListener</button>
+      <button type="button" data-event-topic="event-object">Об’єкт event</button>
+      <button type="button" data-event-topic="delegation">Делегування</button>
+    </aside>
+    <section class="event-code-pane">
+      <header class="dom-code-head"><h2 id="eventCodeTitle">Події в JavaScript</h2><button class="btn sm ghost" id="eventCodeClose" type="button" aria-label="Закрити вікно">✕</button></header>
+      <pre class="dom-code-view" id="eventCodeView"><code id="eventCodeSource"></code></pre>
+    </section>
+  </div>
+</dialog>
 
 <script src="script.js?v=2ddd985"></script>
 </body>

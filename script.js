@@ -3,9 +3,8 @@
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function sourceOf(...functions){return functions.map(fn=>fn.toString()).join('\n\n');}
 function formatCode(source){
-  let out='',i=0,indent=0,paren=0,bracket=0,previous='';
+  let out='',i=0,indent=0,paren=0,bracket=0,previous='',lastSourceNewline=false;
   const lineLength=()=>out.length-(out.lastIndexOf('\n')+1);
   const trimEnd=()=>{out=out.replace(/[ \t]+$/,'');};
   const newline=()=>{trimEnd();if(out&&!out.endsWith('\n'))out+='\n';};
@@ -13,8 +12,9 @@ function formatCode(source){
   const quotedEnd=(start,quote)=>{let p=start+1;while(p<source.length){if(source[p]==='\\'){p+=2;continue;}if(source[p]===quote)return p+1;p++;}return p;};
   while(i<source.length){
     const ch=source[i],next=source[i+1];
-    if(ch==='\n'){newline();i++;continue;}
+    if(ch==='\n'){trimEnd();if(out&&(!out.endsWith('\n')||lastSourceNewline))out+='\n';lastSourceNewline=true;i++;continue;}
     if(/\s/.test(ch)){if(!out.endsWith(' ')&&!out.endsWith('\n'))out+=' ';i++;continue;}
+    lastSourceNewline=false;
     if(ch==='/'&&next==='/'){let end=source.indexOf('\n',i);if(end<0)end=source.length;write(source.slice(i,end));newline();i=end;previous='comment';continue;}
     if(ch==='/'&&next==='*'){let end=source.indexOf('*/',i+2);end=end<0?source.length:end+2;write(source.slice(i,end));i=end;previous='comment';continue;}
     if(ch==='"'||ch==="'"||ch==='`'){const end=quotedEnd(i,ch);write(source.slice(i,end));i=end;previous='value';continue;}
@@ -50,7 +50,7 @@ function highlightCode(source,state={}){
   const core=new Set('const let var if else for while do switch case break default new delete typeof of in'.split(' '));
   const coreOperators=new Set(['+','-','*','/','%','**','==','!=','===','!==','<','>','<=','>=','&&','||','!']);
   const builtins=new Set('document window Array Object Boolean Number String JSON Math Date Map Set BigInt Symbol parseInt parseFloat'.split(' '));
-  const members=new Set('getElementById querySelector querySelectorAll addEventListener removeEventListener classList append appendChild remove textContent innerHTML value length map forEach filter find includes push pop shift unshift sort reverse'.split(' '));
+  const members=new Set('getElementById getElementsByClassName getElementsByTagName querySelector querySelectorAll createElement addEventListener removeEventListener classList append appendChild remove style cssText innerText textContent innerHTML value length map forEach filter find includes push pop shift unshift sort reverse'.split(' '));
   let html='',i=0,previous='';
   const paint=(value,cls)=>`<span class="${cls}">${esc(value)}</span>`;
   const readQuoted=(start,quote)=>{let p=start+1;while(p<source.length){if(source[p]==='\\'){p+=2;continue;}if(source[p]===quote)return p+1;p++;}return p;};
@@ -67,7 +67,7 @@ function highlightCode(source,state={}){
     const word=source.slice(i).match(/^[\p{L}_$][\p{L}\p{N}_$]*/u)?.[0];
     if(word){
       let cls='tok-plain';
-      if(core.has(word))cls='tok-core';else if(keywords.has(word))cls='tok-keyword';else if(word==='true'||word==='false'||word==='null'||word==='undefined'||word==='NaN')cls='tok-literal';else if(builtins.has(word)||members.has(word))cls='tok-builtin';else if(/^\s*\(/.test(source.slice(i+word.length)))cls='tok-function';
+      if(core.has(word))cls='tok-core';else if(keywords.has(word))cls='tok-keyword';else if(word==='true'||word==='false'||word==='null'||word==='undefined'||word==='NaN')cls='tok-literal';else if(builtins.has(word)||members.has(word))cls='tok-builtin';else if(/^\s*\(/.test(source.slice(i+word.length))||previous==='const'&&/^\s*=\s*(?:async\s*)?(?:\([^)]*\)|[\p{L}_$][\p{L}\p{N}_$]*)\s*=>/u.test(source.slice(i+word.length)))cls='tok-function';
       html+=paint(word,cls);i+=word.length;previous=word;continue;
     }
     const number=source.slice(i).match(/^(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?n?/ )?.[0]?.trimEnd();
@@ -110,27 +110,6 @@ function parseAny(raw){
   return s;
 }
 function say(el,text,ok){el.textContent=text;el.className='msg'+(ok===true?' ok':ok===false?' err':'');}
-const codeDialog=$('#codeDialog');
-function showCode(title,source){
-  const dependencies=[];
-  if(source.includes('$(')&&!/const\s+\$\s*=/.test(source))dependencies.push(`const $ = ${$.toString()};`);
-  if(source.includes('$$(')&&!/const\s+\$\$\s*=/.test(source))dependencies.push(`const $$ = ${$$.toString()};`);
-  if(/\bparseAny\(/.test(source)&&!source.includes('function parseAny'))dependencies.push(parseAny.toString());
-  if(/\bkind\(/.test(source)&&!source.includes('function kind'))dependencies.push(kind.toString());
-  if(/\bfmt\(/.test(source)&&!source.includes('function fmt'))dependencies.push(fmt.toString());
-  if(/\besc\(/.test(source)&&!source.includes('const esc'))dependencies.push(`const esc = ${esc.toString()};`);
-  if(/\bsay\(/.test(source)&&!source.includes('function say'))dependencies.push(say.toString());
-  if(dependencies.length)source=dependencies.join('\n\n')+'\n\n'+source;
-  source=formatCode(source);
-  $('#codeTitle').textContent=title;
-  const lexerState={template:false};
-  $('#codeSource').innerHTML=source.split('\n').map(line=>`<span class="code-line">${highlightCode(line,lexerState)||' '}</span>`).join('');
-  codeDialog.showModal();
-}
-function onCode(target,make){target.classList.add('code-target');target.title='Правий клік — показати приклад коду';target.addEventListener('contextmenu',e=>{e.preventDefault();const content=make(e);if(content)showCode(content.title,content.source);});}
-$('#codeClose').addEventListener('click',()=>codeDialog.close());
-codeDialog.addEventListener('click',e=>{if(e.target===codeDialog)codeDialog.close();});
-
 /* ===== page chrome ===== */
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.06});
 $$('.reveal').forEach(el=>io.observe(el));
@@ -165,7 +144,17 @@ addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=
   const need=()=>{if(!sel){say(msg,'Спершу обери елемент (клікни на сторінці або в дереві)',false);return false;}return true;};
   function addElement(){
     const parent=sel||sb,tag=$('#domTag').value,el=document.createElement(tag);
-    el.textContent={p:'Новий абзац',span:'span-текст',li:'Новий пункт',h3:'Новий заголовок',button:'Кнопка',div:'Новий блок'}[tag];
+    if(['img','input','hr'].includes(parent.tagName.toLowerCase()))return say(msg,`${name(parent)} не може містити дочірні елементи`,false);
+    const labels={p:'Новий абзац',span:'span-текст',li:'Новий пункт',h1:'Новий заголовок',h2:'Новий заголовок',h3:'Новий заголовок',h4:'Новий заголовок',button:'Кнопка',div:'Новий блок',section:'Новий розділ',article:'Нова стаття',strong:'Виділений текст',em:'Курсивний текст',ul:'Новий список',ol:'Нумерований список',label:'Підпис до поля'};
+    if(tag==='img'){
+      el.src='https://placehold.co/160x100/png?text=DOM';el.alt='Тестове зображення для DOM';el.width=160;el.height=100;
+    }else if(tag==='a'){
+      el.href='https://example.com/';el.textContent='Тестове посилання';el.target='_blank';el.rel='noopener noreferrer';
+    }else if(tag==='input'){
+      el.type='text';el.placeholder='Текстове поле';el.value='Приклад input';
+    }else if(tag==='button'){
+      el.type='button';el.textContent=labels[tag];
+    }else if(tag!=='hr')el.textContent=labels[tag]||`Новий елемент <${tag}>`;
     parent.appendChild(el);sel=el;refresh();say(msg,`createElement("${tag}") + appendChild → додано в ${name(parent)}`,true);
   }
   function toggleClass(){if(!need())return;if(sel===sb)return say(msg,'Обери вкладений елемент',false);const on=sel.classList.toggle('hl');refresh();say(msg,on?'Клас .hl додано':'Клас .hl прибрано',true);}
@@ -184,16 +173,78 @@ addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=
     catch(e){say(msg,'SyntaxError: некоректний селектор',false);}
   }
   $('#dFind').onclick=find;
-  $('#domSel').addEventListener('keydown',e=>{if(e.key==='Enter')find();});
   function selectPreset(e){const chip=e.target.closest('.chip[data-s]');if(!chip)return;$('#domSel').value=chip.dataset.s;find();}
   $$('.chip[data-s]').forEach(c=>c.addEventListener('click',selectPreset));
-  onCode($('#dom .stage'),e=>{
-    const control=e.target.closest('button, [data-s]');
-    const id=control?.id,func={dAdd:addElement,dClass:toggleClass,dStyle:changeStyle,dDel:deleteElement,dText:changeText,dFind:find}[id];
-    const title=({dAdd:'Створення елемента',dClass:'Перемикання класу',dStyle:'Зміна стилю',dDel:'Видалення елемента',dText:'Зміна тексту',dFind:'Пошук за CSS-селектором'})[id]||'Вибір елемента DOM';
-    const code=func||control?.dataset.s?sourceOf(...(func?[func]:[selectPreset,find])):sourceOf(walk,refresh,select);
-    return{title,source:`const sb=$('#sandbox'),treeEl=$('#tree'),msg=$('#domMsg');\nlet sel=null,nodes=[];\nconst name=el=>el===sb?'контейнер #sandbox':'<'+el.tagName.toLowerCase()+'>';\nconst need=()=>{if(!sel){say(msg,'Спершу обери елемент',false);return false;}return true;};\n\n${sourceOf(walk,refresh,select,func||find,need)}`};
-  });
+  const domCode=`// ===== Пошук і зміна елементів =====
+// Шукаємо елементи за id, класом або назвою тегу.
+const app = document.getElementById("app");
+const cards = document.getElementsByClassName("card");
+const items = document.getElementsByTagName("li");
+
+// querySelector повертає перший збіг, querySelectorAll — усі збіги.
+const firstCard = document.querySelector(".card");
+const allCards = document.querySelectorAll(".card");
+
+const status = document.querySelector("#status");
+// textContent змінює текст усередині знайденого елемента.
+status.textContent = "Готово";
+
+// ===== innerText, textContent та innerHTML =====
+const visibleLabel = document.querySelector(".visible-label");
+// innerText працює з видимим текстом елемента.
+visibleLabel.innerText = "Видимий текст";
+
+const plainMessage = document.querySelector(".plain-message");
+// textContent задає текст без HTML-розмітки.
+plainMessage.textContent = "Текстовий вміст";
+
+const richMessage = document.querySelector(".rich-message");
+// strong позначає важливий текст; за типовими стилями браузера він має напівжирне накреслення.
+richMessage.innerHTML = "<strong>HTML-розмітка</strong>";
+
+// ===== Класи та стилі =====
+const element = document.querySelector(".card");
+// add додає клас, remove знімає його.
+element.classList.add("active");
+element.classList.remove("muted");
+// toggle перемикає клас: додає, якщо його немає, або прибирає, якщо він є.
+element.classList.toggle("selected");
+
+// element.style дає доступ до вбудованих стилів елемента: можна змінити окрему властивість.
+element.style.backgroundColor = "teal";
+// cssText задає всі вбудовані стилі одним CSS-рядком і замінює попередні.
+element.style.cssText = "background-color: teal; color: white; padding: 8px;";
+
+// ===== Створення й додавання елементів =====
+const list = document.querySelector("#items");
+// Створюємо новий li, задаємо йому текст і додаємо в кінець списку.
+const item = document.createElement("li");
+item.textContent = "Новий пункт";
+list.append(item);
+
+// append() приймає вузли й текст, а appendChild() — лише вузол; обидва додають у кінець.
+const anotherItem = document.createElement("li");
+anotherItem.textContent = "Ще один пункт";
+list.appendChild(anotherItem);
+
+// Створюємо зображення, задаємо адресу й альтернативний опис, додаємо в список.
+const image = document.createElement("img");
+image.src = "https://placehold.co/160x100/png?text=DOM";
+image.alt = "DOM";
+list.append(image);
+
+// ===== Видалення елемента =====
+// Видаляємо щойно створений пункт зі сторінки.
+item.remove();`;
+  const domDialog=$('#domDialog');
+  function showDomCode(){
+    const code=formatCode(domCode),lexerState={template:false};
+    $('#domCodeSource').innerHTML=code.split('\n').map(line=>`<span class="code-line">${highlightCode(line,lexerState)||' '}</span>`).join('');
+    domDialog.showModal();
+  }
+  $('#openDomCode').addEventListener('click',showDomCode);
+  $('#domCodeClose').addEventListener('click',()=>domDialog.close());
+  domDialog.addEventListener('click',e=>{if(e.target===domDialog)domDialog.close();});
   refresh();
 })();
 
@@ -202,9 +253,131 @@ addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=
 (function(){
   /* playground */
   const pad=$('#pad'),logEl=$('#evLog');
-  const TYPES=['click','dblclick','contextmenu','mouseenter','mouseleave','mousemove','keydown','wheel'];
+  const TYPES=['click','dblclick','contextmenu','mouseenter','mouseleave','mousemove','wheel'];
   const counts={},on={click:1,dblclick:1,mouseenter:1,mouseleave:1};
   let lines=[];
+  const eventTopics=[
+    {id:'basics',marker:'// ===== Події браузера ====='},
+    {id:'listeners',marker:'// ===== addEventListener() і removeEventListener() ====='},
+    {id:'event-object',marker:'// ===== Об’єкт події: type і target ====='},
+    {id:'delegation',marker:'// ===== Делегування подій ====='}
+  ];
+  const eventCode=`// ===== Події браузера =====
+// Подія — сигнал про дію користувача або зміну в браузері.
+// Приклади: click, input, change, submit, keydown, pointermove.
+
+// ===== addEventListener() і removeEventListener() =====
+const toggleButton = document.querySelector(".toggle-button");
+
+// Обробник можна оголосити звичайною функцією або стрілочною функцією.
+function handleClickWithFunction(event) {
+  console.log("Клік");
+}
+const handleClickEvent = event => console.log("Клік");
+
+// Підключаємо стрілочний варіант і передаємо те саме посилання для відписки.
+toggleButton.addEventListener("click", handleClickEvent);
+toggleButton.removeEventListener("click", handleClickEvent);
+
+// Наступний варіант не спрацює: кожна стрілка тут створює окрему функцію.
+// toggleButton.addEventListener("click", () => console.log("Клік"));
+// toggleButton.removeEventListener("click", () => console.log("Клік"));
+
+// ===== Об’єкт події: type і target =====
+function logEvent(event) {
+  // Усі три значення побачиш у вкладці Console (Консоль) інструментів розробника.
+  console.log(event.type);         // Назва події: input, change або submit.
+  console.log(event.target);       // Елемент, на якому сталася подія.
+  console.log(event.currentTarget);// Елемент, на якому зареєстрований цей обробник.
+  // Для submit скасовуємо стандартну відправку форми.
+  if (event.type === "submit") event.preventDefault();
+}
+
+const input = document.querySelector("#submitName");
+const form = document.querySelector("#submitDemo");
+// Поки друкуєш ім’я: Console покаже "input", поле #submitName, поле #submitName.
+input.addEventListener("input", logEvent);
+// Після редагування й виходу з поля: "change", #submitName, #submitName.
+input.addEventListener("change", logEvent);
+// Після натискання «Надіслати»: "submit", кнопка submit, форма #submitDemo.
+form.addEventListener("submit", logEvent);
+
+// capture: true викликає обробник на шляху до цілі; за замовчуванням це false.
+toggleButton.addEventListener("click", handleClickEvent, { capture: true });
+// Те саме коротким записом: третій аргумент true вмикає capture.
+// toggleButton.addEventListener("click", handleClickEvent, true);
+
+// ===== Делегування подій =====
+const list = document.querySelector("#list");
+
+function handleListClick(event) {
+  // closest() шукає найближчий li від цілі кліку (навіть якщо клікнули по span).
+  const item = event.target.closest("li");
+  // contains() перевіряє, що знайдений li справді всередині саме цього списку.
+  if (!item || !list.contains(item)) return;
+
+  // toggle додає клас done для позначення виконаного пункту або знімає його.
+  item.classList.toggle("done");
+}
+
+// Один обробник на списку спрацьовує і для пунктів, доданих пізніше.
+list.addEventListener("click", handleListClick);
+`;
+  const eventCodeDialog=$('#eventCodeDialog');
+  const eventCodeSource=$('#eventCodeSource');
+  const eventCodeView=$('#eventCodeView');
+  function renderEventCode(){
+    const code=formatCode(eventCode),lexerState={template:false};
+    $$('#eventCodeTopics [data-event-topic]').forEach(button=>{
+      const active=button.dataset.eventTopic==='basics';
+      button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));
+    });
+    eventCodeSource.innerHTML=code.split('\n').map(line=>{
+      const topic=eventTopics.find(item=>item.marker===line.trim());
+      const anchor=topic?` data-event-anchor="${topic.id}"`:'';
+      return `<span class="code-line"${anchor}>${highlightCode(line,lexerState)||' '}</span>`;
+    }).join('');
+    eventCodeView.scrollTop=0;
+  }
+  $('#openEventCode').addEventListener('click',()=>{
+    renderEventCode();eventCodeDialog.showModal();
+  });
+  $('#eventCodeTopics').addEventListener('click',e=>{
+    const button=e.target.closest('[data-event-topic]');if(!button)return;
+    const topic=button.dataset.eventTopic;
+    const marker=$(`[data-event-anchor="${topic}"]`,eventCodeSource);
+    if(!marker)return;
+    $$('#eventCodeTopics [data-event-topic]').forEach(item=>{
+      const selected=item===button;
+      item.classList.toggle('active',selected);item.setAttribute('aria-pressed',String(selected));
+    });
+    const top=marker.getBoundingClientRect().top-eventCodeView.getBoundingClientRect().top+eventCodeView.scrollTop;
+    eventCodeView.scrollTo({top,behavior:'smooth'});
+  });
+  let scrollTick=false;
+  eventCodeView.addEventListener('scroll',()=>{
+    if(scrollTick)return;
+    scrollTick=true;
+    requestAnimationFrame(()=>{
+      scrollTick=false;
+      const viewTop=eventCodeView.getBoundingClientRect().top;
+      const anchors=$$('[data-event-anchor]',eventCodeSource);
+      let current=anchors[0];
+      for(const anchor of anchors){
+        if(anchor.getBoundingClientRect().top<=viewTop+24)current=anchor;
+        else break;
+      }
+      if(current){
+        const active=current.dataset.eventAnchor;
+        $$('#eventCodeTopics [data-event-topic]').forEach(item=>{
+          const selected=item.dataset.eventTopic===active;
+          item.classList.toggle('active',selected);item.setAttribute('aria-pressed',String(selected));
+        });
+      }
+    });
+  });
+  $('#eventCodeClose').addEventListener('click',()=>eventCodeDialog.close());
+  eventCodeDialog.addEventListener('click',e=>{if(e.target===eventCodeDialog)eventCodeDialog.close();});
   $('#evChecks').innerHTML=TYPES.map(t=>`<label class="${on[t]?'on':''}"><input type="checkbox" data-t="${t}" ${on[t]?'checked':''}>${t}<em id="cnt-${t}">0</em></label>`).join('');
   function ripple(e){
     const r=pad.getBoundingClientRect(),s=document.createElement('span');s.className='ripple';
@@ -217,8 +390,7 @@ addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=
     return function(e){
       counts[t]=(counts[t]||0)+1;$('#cnt-'+t).textContent=counts[t];
       let info='';
-      if(t==='keydown'){info='key: '+(e.key===' '?'Space':e.key);if(e.key===' '||e.key.startsWith('Arrow'))e.preventDefault();}
-      else if(t==='wheel'){e.preventDefault();info='deltaY: '+Math.round(e.deltaY);}
+      if(t==='wheel'){e.preventDefault();info='deltaY: '+Math.round(e.deltaY);}
       else{const r=pad.getBoundingClientRect();info=`x: ${Math.round(e.clientX-r.left)}, y: ${Math.round(e.clientY-r.top)}`;if(t==='click'||t==='dblclick'||t==='contextmenu')ripple(e);}
       if(t==='contextmenu'){e.preventDefault();info+=' (меню скасовано)';}
       const time=new Date().toLocaleTimeString('uk-UA');
@@ -236,8 +408,6 @@ addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=
     listen(t,e.target.checked);
   }
   $('#evChecks').addEventListener('change',toggleSubscription);
-  onCode($('#evChecks'),e=>{const t=e.target.closest('label')?.querySelector('[data-t]')?.dataset.t;if(!t)return null;return{title:`Реальний обробник події ${t}`,source:`const pad = $('#pad');\nconst logEl = $('#evLog');\n\n${sourceOf(handler(t),toggleSubscription,listen,paintLog)}`} ;});
-  onCode(pad,()=>({title:'Обробники інтерактивного поля',source:`const pad = $('#pad');\nconst logEl = $('#evLog');\n\n${sourceOf(handler('click'),handler('wheel'),listen,paintLog)}`}));
   paintLog();
 
   /* inputs */
@@ -250,8 +420,6 @@ addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=
     $('#echo').textContent=nameIn.value.trim()?`👋 Привіт, ${nameIn.value.trim()}!`:'Спершу введи ім’я';
   }
   $('#greetBtn').addEventListener('click',greet);
-  function greetOnEnter(e){if(e.key==='Enter')greet();}
-  nameIn.addEventListener('keydown',greetOnEnter);
   function resizeCircle(e){
     const v=+e.target.value,c=$('#circle');c.style.width=c.style.height=v+'px';c.textContent=v;c.style.filter=`hue-rotate(${(v-30)*2}deg)`;
   }
@@ -259,63 +427,15 @@ addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=
 
   /* submit event */
   const submitForm=$('#submitDemo');let submitCount=0;
-  function handleSubmitDemo(e){e.preventDefault();const name=$('#submitName').value.trim();submitCount++;$('#submitResult').textContent=`Форму оброблено для ${name} · submit №${submitCount}. Сторінка залишилася на місці.`;$('#submitResult').className='msg ok';}
+  function handleSubmitDemo(e){
+    // Зазвичай браузер надсилає дані за адресою форми й показує відповідь сервера.
+    // preventDefault() скасовує це стандартне надсилання — результат лишається тут.
+    e.preventDefault();
+    const name=$('#submitName').value.trim();submitCount++;
+    $('#submitResult').textContent=`Форму оброблено для ${name} · submit №${submitCount}. Сторінка залишилася на місці.`;
+    $('#submitResult').className='msg ok';
+  }
   submitForm.addEventListener('submit',handleSubmitDemo);
-  onCode(submitForm,()=>({title:'Обробка події submit',source:`const submitForm = $('#submitDemo');
-
-${sourceOf(handleSubmitDemo)}
-
-submitForm.addEventListener('submit', handleSubmitDemo);`}));
-
-  /* mouseover and mouseout */
-  const hoverDemo=$('#hoverDemo');let overCount=0,outCount=0;
-  function handleHoverBoundary(e){if(e.relatedTarget&&hoverDemo.contains(e.relatedTarget))return;const part=e.target.closest('[data-hover-part]')?.dataset.hoverPart||'картка';if(e.type==='mouseover')$('#overCount').textContent=++overCount;else $('#outCount').textContent=++outCount;$('#hoverLast').textContent=`${e.type}: ${part} (target), картка (currentTarget)`;}
-  hoverDemo.addEventListener('mouseover',handleHoverBoundary);
-  hoverDemo.addEventListener('mouseout',handleHoverBoundary);
-  onCode(hoverDemo,()=>({title:'Обробка mouseover та mouseout',source:`const hoverDemo = $('#hoverDemo');
-
-${sourceOf(handleHoverBoundary)}
-
-hoverDemo.addEventListener('mouseover', handleHoverBoundary);
-hoverDemo.addEventListener('mouseout', handleHoverBoundary);`}));
-  onCode($('#demoForm'),()=>({title:'Реальні обробники поля та форми',source:`const nameIn = $('#nameIn');\n\n${sourceOf(onNameInput,onNameChange,greet,greetOnEnter)}\n\nnameIn.addEventListener('input', onNameInput);\nnameIn.addEventListener('change', onNameChange);\nnameIn.addEventListener('keydown', greetOnEnter);`}));
-  onCode($('#circR'),()=>({title:'Реальний обробник повзунка',source:`const circle = $('#circle');\n\n${sourceOf(resizeCircle)}`}));
-
-  /* bubbling */
-  const boxes=$$('.bx'),orderEl=$('#order');
-  let capture=false,stopMid=false,order=[],pending=false,timers=[];
-  function bh(e){
-    order.push(this.dataset.n);
-    if(stopMid&&this.dataset.n===$('#stopTarget').value)e.stopPropagation();
-    if(!pending){pending=true;setTimeout(flush,0);}
-  }
-  function attach(){boxes.forEach(b=>{b.removeEventListener('click',bh,true);b.removeEventListener('click',bh,false);b.addEventListener('click',bh,capture);});}
-  function flush(){
-    pending=false;const seq=order;order=[];
-    timers.forEach(clearTimeout);timers=[];boxes.forEach(b=>b.classList.remove('fire'));
-    orderEl.innerHTML='';
-    seq.forEach((n,i)=>{
-      timers.push(setTimeout(()=>{
-        const b=boxes.find(x=>x.dataset.n===n);b.classList.add('fire');
-        orderEl.insertAdjacentHTML('beforeend',`${i?'<i style="color:var(--mute)">→</i>':''}<span class="pill" style="--c:var(--${n==='outer'?'violet':n==='middle'?'cyan':'pink'})">${i+1}. ${n}</span>`);
-        setTimeout(()=>b.classList.remove('fire'),420);
-      },i*480));
-    });
-    if(seq.length&&stopMid&&!seq.includes('outer')||(seq.length&&stopMid&&capture&&!seq.includes('inner'))){
-      timers.push(setTimeout(()=>orderEl.insertAdjacentHTML('beforeend','<span class="counter">⛔ stopPropagation: далі подія не пішла</span>'),seq.length*480));
-    }
-  }
-  function changePhase(e){
-    const r=e.currentTarget;
-    capture=r.value==='capture'&&r.checked?true:$('input[name=phase]:checked').value==='capture';
-    $('#phBubble').classList.toggle('on',!capture);$('#phCapture').classList.toggle('on',capture);attach();
-  }
-  $$('input[name=phase]').forEach(r=>r.addEventListener('change',changePhase));
-  function togglePropagationStop(e){stopMid=e.target.checked;$('#stopTog').classList.toggle('on',stopMid);}
-  $('#stopMid').addEventListener('change',togglePropagationStop);
-  onCode($('#events .stage:nth-of-type(3) .row'),()=>({title:'Реальні обробники спливання та занурення',source:`const boxes = $$('.bx');\nconst orderEl = $('#order');\n\n${sourceOf(bh,attach,changePhase,togglePropagationStop,flush)}`}));
-  onCode($('#events .bx.outer'),()=>({title:'Як обробляється й показується порядок подій',source:`const boxes = $$('.bx');\nconst orderEl = $('#order');\n\n${sourceOf(bh,attach,flush)}`}));
-  attach();
 
   /* delegation */
   const list=document.getElementById('deleList');let ni=0;
@@ -329,7 +449,5 @@ hoverDemo.addEventListener('mouseout', handleHoverBoundary);`}));
   list.addEventListener('click',handleListClick);
   function addTodo(){addItem('Нове завдання №'+(++ni));say($('#deleMsg'),'Новий елемент одразу працює — додатковий обробник не потрібен',true);}
   $('#deleAdd').onclick=addTodo;
-  onCode($('#deleList'),()=>({title:'Делегування подій списку',source:`const list=document.getElementById('deleList');let ni=0;\n\n${sourceOf(addItem,handleListClick,addTodo)}\n\n['Купити хліб','Вивчити JavaScript','Погуляти'].forEach(addItem);\nlist.addEventListener('click',handleListClick);\n$('#deleAdd').onclick=addTodo;`}));
-  onCode($('#deleAdd'),()=>({title:'Додавання рядка у список',source:`const list=document.getElementById('deleList');let ni=0;\n\n${sourceOf(addItem,addTodo)}\n\n$('#deleAdd').onclick=addTodo;`}));
 })();
 })();
